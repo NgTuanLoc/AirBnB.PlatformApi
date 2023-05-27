@@ -1,4 +1,4 @@
-namespace Common.Exceptions
+namespace Core.Exceptions
 {
    public class NotFoundException : Exception
    {

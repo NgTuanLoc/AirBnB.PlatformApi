@@ -483,3 +483,4 @@ bin/
 obj/
 *.txt
 *appsettings*
+/Data

@@ -1,6 +1,8 @@
+using Azure.Storage.Blobs;
 using Core.Domain.IdentityEntities;
 using Core.Services;
 using Infrastructure.DbContext;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -23,12 +25,22 @@ namespace PlatformApi.Extensions
          services.AddEndpointsApiExplorer();
          services.AddSwaggerGen();
 
+         // BlobStorage
+         services.AddScoped(_ =>
+         {
+            var connection = configuration.GetConnectionString("BlobStorageConnection");
+            return new BlobServiceClient(connection);
+         });
+
+         // Add Middleware
          services.AddSingleton<IAuthorizationMiddlewareResultHandler, UnauthorizedHandler>();
 
          // Repositories Layer
+         services.AddScoped<IImageRepository, ImageRepository>();
 
          // Services Layer
          services.AddScoped<IAuthService, AuthService>();
+         services.AddScoped<IImageService, ImageService>();
 
          // Add DbContext Services
          services.AddDbContext<ApplicationDbContext>(

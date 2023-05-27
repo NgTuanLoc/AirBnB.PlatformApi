@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Common.Constants
+namespace Core.Constants
 {
    public static class RegexConstants
    {

@@ -1,5 +1,5 @@
-using Common.Exceptions;
-using Common.Models.Auth;
+using Core.Exceptions;
+using Core.Models.Auth;
 using Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 

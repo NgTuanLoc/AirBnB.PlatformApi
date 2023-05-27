@@ -1,4 +1,4 @@
-using Common.Models.Auth;
+using Core.Models.Auth;
 using Core.Domain.IdentityEntities;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;

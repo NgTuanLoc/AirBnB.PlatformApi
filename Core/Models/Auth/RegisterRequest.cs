@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Common.Constants;
+using Core.Constants;
 
-namespace Common.Models.Auth
+namespace Core.Models.Auth
 {
    public class RegisterRequest
    {
