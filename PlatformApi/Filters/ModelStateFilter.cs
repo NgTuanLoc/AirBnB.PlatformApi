@@ -16,13 +16,15 @@ namespace PlatformApi.Filters
             {
                var error = state.Key;
                var ErrorMessageList = state.Value.Errors.Select(e => e.ErrorMessage).ToArray();
-               errors.Add(error, ErrorMessageList);
+               if (ErrorMessageList.Count() != 0)
+               {
+                  errors.Add(error, ErrorMessageList);
+               }
             }
             context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             context.Result = new BadRequestObjectResult(errors);
             return;
          }
-
       }
       public void OnActionExecuted(ActionExecutedContext context)
       {

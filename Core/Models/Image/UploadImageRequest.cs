@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Common.Models.Images
+namespace Common.Models.Image
 {
    public class UploadImageRequest
    {

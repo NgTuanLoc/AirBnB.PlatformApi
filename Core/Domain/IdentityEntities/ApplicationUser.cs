@@ -12,5 +12,6 @@ namespace Core.Domain.IdentityEntities
       public string Address { get; set; } = "Unknown Address";
       public string ProfileImage { get; set; } = "Unknown ProfileImage";
       public string Description { get; set; } = "Unknown Description";
+      public bool? IsMarried { get; set; }
    }
 }

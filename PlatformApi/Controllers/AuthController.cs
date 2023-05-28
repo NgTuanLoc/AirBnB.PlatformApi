@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
+   [Route("api/v1/[controller]")]
    public class AuthController : Controller
    {
       private readonly ILogger<AuthController> _logger;

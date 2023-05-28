@@ -52,17 +52,11 @@ namespace Core.Services
 
          if (result.IsLockedOut)
          {
-            throw new ValidationException("Your account has been banned because someone trying to login this account to many times");
+            throw new ValidationException($"You have tried to login too many times, please try again in {_userManager.Options.Lockout.DefaultLockoutTimeSpan} minutes");
          }
          if (!result.Succeeded)
          {
-            var AccessFailedCount = user.AccessFailedCount + 1;
-            if (AccessFailedCount == 4)
-            {
-               await _userManager.SetLockoutEnabledAsync(user, true);
-               throw new ValidationException("You have tried to login too many times, please try again in an hour");
-            }
-            throw new ValidationException($"Wrong Password! You have tried {AccessFailedCount} times");
+            throw new ValidationException($"Wrong Password! You have tried {user.AccessFailedCount} times");
          }
 
          return user;

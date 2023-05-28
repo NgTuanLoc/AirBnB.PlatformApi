@@ -1,5 +1,6 @@
 using Azure.Storage.Blobs;
 using Core.Domain.IdentityEntities;
+using Core.Domain.RepositoryInterface;
 using Core.Services;
 using Infrastructure.DbContext;
 using Infrastructure.Repositories;
@@ -59,6 +60,12 @@ namespace PlatformApi.Extensions
            .AddDefaultTokenProviders()
            .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
            .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
+
+         services.Configure<IdentityOptions>(options =>
+            {
+               options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2); // Set lockout duration to 30 minutes
+               options.Lockout.MaxFailedAccessAttempts = 5; // Set maximum number of failed login attempts before lockout
+            });
 
          return services;
       }
