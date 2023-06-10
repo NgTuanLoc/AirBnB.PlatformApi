@@ -20,8 +20,7 @@ namespace PlatformApi.Controllers
       public async Task<IActionResult> GetRoomList()
       {
          var user = await _userManager.GetUserAsync(User);
-
-         return Ok(user.UserName);
+         return Ok(user);
       }
    }
 }

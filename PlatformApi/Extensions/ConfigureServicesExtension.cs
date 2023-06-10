@@ -42,6 +42,7 @@ namespace PlatformApi.Extensions
          // Services Layer
          services.AddScoped<IAuthService, AuthService>();
          services.AddScoped<IImageService, ImageService>();
+         services.AddScoped<IUserService, UserService>();
 
          // Add DbContext Services
          services.AddDbContext<ApplicationDbContext>(

@@ -20,12 +20,12 @@ namespace Core.Models.Auth
       public string Phone { get; set; } = default!;
 
       [Required(ErrorMessage = "{0} can not be empty or null")]
+      [StringLength(40, MinimumLength = 5, ErrorMessage = "{0} should be between {2} and {1} characters long")]
       [RegularExpression(RegexConstants.PasswordRegex, ErrorMessage = "{0} should be more complex")]
       public string Password { get; set; } = default!;
 
 
       [Required(ErrorMessage = "{0} can not be empty or null")]
-      [StringLength(40, MinimumLength = 5, ErrorMessage = "{0} should be between {2} and {1} characters long")]
       [Compare("Password", ErrorMessage = "{0} and confirm password do not match")]
       public string ConfirmPassword { get; set; } = default!;
    }
