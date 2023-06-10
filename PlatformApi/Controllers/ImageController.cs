@@ -1,4 +1,4 @@
-using Common.Models.Image;
+using Core.Models.Image;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +17,10 @@ namespace PlatformApi.Controllers
          _imageService = imageService;
       }
       [HttpPost("upload-image")]
-      public async Task<IActionResult> CreateImage([FromForm] UploadImageRequest request)
+      public async Task<IActionResult> CreateImage([FromForm] UploadImageRequest request, CancellationToken cancellationToken)
       {
-         await _imageService.CreateImageAsync(request);
-         return Ok("createImage successfully");
+         var result = await _imageService.CreateImageAsync(request, cancellationToken);
+         return Ok(result);
       }
    }
 }

@@ -9,7 +9,9 @@ namespace Core.Domain.Entities
    {
       public string Title { get; set; } = "Unknown Title";
       public string Description { get; set; } = "Unknown Description";
-      public string? Url { get; set; }
+      public string? LowQualityUrl { get; set; }
+      public string? MediumQualityUrl { get; set; }
+      public string? HighQualityUrl { get; set; }
       public Room? Room { get; set; }
    }
 }

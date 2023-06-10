@@ -9,10 +9,9 @@ namespace Infrastructure.DbContext
    {
       public DbSet<Room> Room { get; set; }
       public DbSet<Location> Location { get; set; }
-      public DbSet<Image> Image { get; set; }
+      public DbSet<Core.Domain.Entities.Image> Image { get; set; }
       public DbSet<Reservation> Reservation { get; set; }
       public DbSet<Review> Review { get; set; }
-      public DbSet<Person> Person { get; set; }
       public ApplicationDbContext(DbContextOptions options) : base(options)
       {
       }
