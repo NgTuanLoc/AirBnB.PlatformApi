@@ -9,7 +9,6 @@ namespace Core.Models.Image
 {
    public class UploadImageRequest
    {
-      [Display(Name = "FileName")]
       [Required(ErrorMessage = "{0} can not be empty or null")]
       public string Title { get; set; } = default!;
       [Required(ErrorMessage = "{0} can not be empty or null")]

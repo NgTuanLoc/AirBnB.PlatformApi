@@ -9,5 +9,6 @@ namespace Core.Models.Image
       public string? LowQualityUrl { get; set; }
       public string? MediumQualityUrl { get; set; }
       public string? HighQualityUrl { get; set; }
+      public Guid? RoomId { get; set; }
    }
 }

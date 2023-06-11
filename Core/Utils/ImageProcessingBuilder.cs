@@ -68,4 +68,27 @@ namespace Core.Utils
          return outputStream;
       }
    }
+   public static class ProcessedImageFactory
+   {
+      public static Stream TransformToMediumQualityImage(IFormFile file)
+      {
+         var processedImageBuilder = new ImageProcessingBuilder();
+         var processedImageStream = processedImageBuilder
+                                 .LoadImage(file)
+                                 .ResizeImage(ProcessingMediumQualityImageConstants.RESIZE_WIDTH, ProcessingMediumQualityImageConstants.RESIZE_HEIGHT)
+                                 .BlurImage(ProcessingMediumQualityImageConstants.GAUSSIAN_BLUR_SIGMA)
+                                 .GetImageStreamWithQuality(ProcessingMediumQualityImageConstants.IMAGE_QUALITY);
+         return processedImageStream;
+      }
+      public static Stream TransformToLowQualityImage(IFormFile file)
+      {
+         var processedImageBuilder = new ImageProcessingBuilder();
+         var processedImageStream = processedImageBuilder
+                                 .LoadImage(file)
+                                 .ResizeImage(ProcessingLowQualityImageConstants.RESIZE_WIDTH, ProcessingLowQualityImageConstants.RESIZE_HEIGHT)
+                                 .BlurImage(ProcessingLowQualityImageConstants.GAUSSIAN_BLUR_SIGMA)
+                                 .GetImageStreamWithQuality(ProcessingLowQualityImageConstants.IMAGE_QUALITY);
+         return processedImageStream;
+      }
+   }
 }
