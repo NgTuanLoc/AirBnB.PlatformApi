@@ -71,6 +71,8 @@ namespace Infrastructure.Repositories
             LowQualityUrl = image.LowQualityUrl,
             CreatedDate = image.CreatedDate,
             CreatedBy = image.CreatedBy,
+            ModifiedDate = image.ModifiedDate,
+            ModifiedBy = image.ModifiedBy,
             RoomId = image?.Room?.Id
          };
       }
@@ -91,6 +93,8 @@ namespace Infrastructure.Repositories
             LowQualityUrl = image.LowQualityUrl,
             CreatedDate = image.CreatedDate,
             CreatedBy = image.CreatedBy,
+            ModifiedDate = image.ModifiedDate,
+            ModifiedBy = image.ModifiedBy,
             RoomId = image?.Room?.Id
          };
       }
@@ -118,6 +122,8 @@ namespace Infrastructure.Repositories
             LowQualityUrl = image.LowQualityUrl,
             CreatedDate = image.CreatedDate,
             CreatedBy = image.CreatedBy,
+            ModifiedDate = image.ModifiedDate,
+            ModifiedBy = image.ModifiedBy,
             RoomId = image?.Room?.Id
          };
       }
@@ -161,6 +167,10 @@ namespace Infrastructure.Repositories
             image.LowQualityUrl = urlList.lowQualityUrl;
          }
 
+         var user = await _userRepository.GetUserAsync();
+         image.ModifiedBy = user.Email;
+         image.ModifiedDate = DateTime.Now;
+
          await _context.SaveChangesAsync(cancellationToken);
 
          return new CreateImageResponse()
@@ -173,6 +183,8 @@ namespace Infrastructure.Repositories
             LowQualityUrl = image.LowQualityUrl,
             CreatedDate = image.CreatedDate,
             CreatedBy = image.CreatedBy,
+            ModifiedDate = image.ModifiedDate,
+            ModifiedBy = image.ModifiedBy,
             RoomId = image?.Room?.Id
          };
       }
