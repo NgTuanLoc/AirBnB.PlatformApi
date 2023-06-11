@@ -19,7 +19,25 @@ namespace PlatformApi.Controllers
       [HttpPost("upload-image")]
       public async Task<IActionResult> CreateImage([FromForm] UploadImageRequest request, CancellationToken cancellationToken)
       {
-         var result = await _imageService.CreateImageAsync(request, cancellationToken);
+         var result = await _imageService.CreateImageService(request, cancellationToken);
+         return Ok(result);
+      }
+      [HttpGet("{id}")]
+      public async Task<IActionResult> GetImageById([FromRoute] Guid id, CancellationToken cancellationToken)
+      {
+         var result = await _imageService.GetImageByIdService(id, cancellationToken);
+         return Ok(result);
+      }
+      [HttpDelete("{id}")]
+      public async Task<IActionResult> DeleteImageById([FromRoute] Guid id, CancellationToken cancellationToken)
+      {
+         var result = await _imageService.DeleteImageByIdService(id, cancellationToken);
+         return Ok(result);
+      }
+      [HttpPatch("{id}")]
+      public async Task<IActionResult> UpdateImageById([FromRoute] Guid id, [FromForm] UpdateImageRequest request, CancellationToken cancellationToken)
+      {
+         var result = await _imageService.UpdateImageByIdService(id, request, cancellationToken);
          return Ok(result);
       }
    }
