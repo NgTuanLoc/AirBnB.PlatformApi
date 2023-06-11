@@ -5,7 +5,6 @@ using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace PlatformApi.Controllers
 {
@@ -15,37 +14,27 @@ namespace PlatformApi.Controllers
    {
       private readonly ILogger<UserController> _logger;
       private readonly IUserService _userService;
-      private readonly UserManager<ApplicationUser> _userManager;
-      public UserController(ILogger<UserController> logger, UserManager<ApplicationUser> userManager, IUserService userService)
+      public UserController(ILogger<UserController> logger, IUserService userService)
       {
          _logger = logger;
-         _userManager = userManager;
          _userService = userService;
       }
       [HttpGet("get-user")]
       public async Task<IActionResult> GetUser(CancellationToken cancellationToken)
       {
-         var user = await _userManager.GetUserAsync(User);
-
-         if (user == null)
-         {
-            throw new ValidationException("User not found !");
-         }
-
+         var user = await _userService.GetUser();
          return Ok(user);
       }
       [HttpPost("change-password")]
       public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request, CancellationToken cancellationToken)
       {
-         var user = await _userManager.GetUserAsync(User);
-         var result = await _userService.ChangePasswordService(request, user, cancellationToken);
+         var result = await _userService.ChangePasswordService(request, cancellationToken);
          return Ok(result);
       }
       [HttpPost("get-reset-password-token")]
       public async Task<IActionResult> GetResetPasswordToken()
       {
-         var user = await _userManager.GetUserAsync(User);
-         var token = await _userService.GetResetPasswordTokenService(user);
+         var token = await _userService.GetResetPasswordTokenService();
          return Ok(token);
       }
       [HttpPost("reset-password")]

@@ -4,20 +4,24 @@ using Core.Domain.Entities;
 using Core.Domain.RepositoryInterface;
 using Core.Models.Image;
 using Infrastructure.DbContext;
+
 namespace Infrastructure.Repositories
 {
    public class ImageRepository : IImageRepository
    {
       private readonly BlobServiceClient _blobServiceClient;
       private readonly ApplicationDbContext _context;
-      public ImageRepository(BlobServiceClient blobServiceClient, ApplicationDbContext context)
+      private readonly IUserRepository _userRepository;
+      public ImageRepository(BlobServiceClient blobServiceClient, ApplicationDbContext context, IUserRepository userRepository)
       {
          _blobServiceClient = blobServiceClient;
          _context = context;
+         _userRepository = userRepository;
       }
 
       public async Task<CreateImageResponse> CreateImageAsync(UploadImageRequest request, UploadImageResponse urlList, CancellationToken cancellationToken)
       {
+         var user = await _userRepository.GetUserAsync();
          var image = new Image()
          {
             Title = request.Title,
@@ -25,6 +29,8 @@ namespace Infrastructure.Repositories
             HighQualityUrl = urlList.highQualityUrl,
             MediumQualityUrl = urlList.mediumQualityUrl,
             LowQualityUrl = urlList.lowQualityUrl,
+            CreatedDate = DateTime.Now,
+            CreatedBy = user.Email ?? "Unknown",
             Room = null
          };
 
@@ -39,6 +45,8 @@ namespace Infrastructure.Repositories
             HighQualityUrl = image.HighQualityUrl,
             MediumQualityUrl = image.MediumQualityUrl,
             LowQualityUrl = image.LowQualityUrl,
+            CreatedDate = image.CreatedDate,
+            CreatedBy = image.CreatedBy
          };
       }
 

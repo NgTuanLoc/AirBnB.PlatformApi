@@ -23,6 +23,7 @@ namespace PlatformApi.Extensions
             options.Filters.Add(typeof(ModelStateFilter));
             options.Filters.Add(typeof(CustomExceptionFilter));
          }).AddNewtonsoftJson();
+         services.AddHttpContextAccessor();
          services.AddEndpointsApiExplorer();
          services.AddSwaggerGen();
 
@@ -38,6 +39,7 @@ namespace PlatformApi.Extensions
 
          // Repositories Layer
          services.AddScoped<IImageRepository, ImageRepository>();
+         services.AddScoped<IUserRepository, UserRepository>();
 
          // Services Layer
          services.AddScoped<IAuthService, AuthService>();

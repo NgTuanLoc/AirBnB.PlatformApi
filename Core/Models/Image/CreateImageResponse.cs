@@ -1,6 +1,8 @@
+using Core.Domain.Entities;
+
 namespace Core.Models.Image
 {
-   public class CreateImageResponse
+   public class CreateImageResponse : BaseModel
    {
       public string Title { get; set; } = default!;
       public string Description { get; set; } = default!;
