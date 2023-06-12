@@ -40,10 +40,12 @@ namespace PlatformApi.Extensions
          // Repositories Layer
          services.AddScoped<IImageRepository, ImageRepository>();
          services.AddScoped<IUserRepository, UserRepository>();
+         services.AddScoped<ILocationRepository, LocationRepository>();
 
          // Services Layer
          services.AddScoped<IAuthService, AuthService>();
          services.AddScoped<IImageService, ImageService>();
+         services.AddScoped<ILocationService, LocationService>();
          services.AddScoped<IUserService, UserService>();
 
          // Add DbContext Services
