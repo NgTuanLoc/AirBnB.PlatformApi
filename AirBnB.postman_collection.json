@@ -1,0 +1,557 @@
+{
+	"info": {
+		"_postman_id": "7f171cb4-ac89-446b-b8bf-79603e0317d6",
+		"name": "AirBnB",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15072473"
+	},
+	"item": [
+		{
+			"name": "Room",
+			"item": [
+				{
+					"name": "Get Room List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{URL}}/room/getRoomList",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"room",
+								"getRoomList"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"PersonName\" : \"Tuan Loc\",\n    \"Email\" : \"tuanloc235@gmail.com\",\n    \"Phone\" : \"0971719023\",\n    \"Password\" : \"Whystudy123@\",\n    \"ConfirmPassword\" : \"Whystudy123@\",\n    \"Address\" : \"123 Baker Street\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/register",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Email\" : \"tuanloc235@gmail.com\",\n    \"Password\" : \"Whystudy123@\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/auth/logout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Image",
+			"item": [
+				{
+					"name": "Upload Image List",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "File",
+									"type": "file",
+									"src": "/Users/macintoshhd/Desktop/Images/Levels 2 - Jeff Finley.jpg"
+								},
+								{
+									"key": "FileName",
+									"value": "AirBnB",
+									"type": "text"
+								},
+								{
+									"key": "Description",
+									"value": "loctest",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/image/upload-image",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"image",
+								"upload-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload A Single Image",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "File",
+									"type": "file",
+									"src": "/Users/macintoshhd/Desktop/Images/test.jpg"
+								},
+								{
+									"key": "Title",
+									"value": "AirBnB",
+									"type": "text"
+								},
+								{
+									"key": "Description",
+									"value": "Image Test 1",
+									"type": "text"
+								},
+								{
+									"key": "RoomId",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/image/upload-image",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"image",
+								"upload-image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Image By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/image/db38a144-d9dd-48fd-be7e-381bfce360cb",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"image",
+								"db38a144-d9dd-48fd-be7e-381bfce360cb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Image By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/image/ea9a6bbc-d494-4c73-fe2d-08db69c80113",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"image",
+								"ea9a6bbc-d494-4c73-fe2d-08db69c80113"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Image By Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "File",
+									"type": "file",
+									"src": "/Users/macintoshhd/Desktop/Images/Eyes 1 - Philipe Cavalcante.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/image/c6997b2b-7d4d-42e2-88c4-e841bd43039c",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"image",
+								"c6997b2b-7d4d-42e2-88c4-e841bd43039c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservation",
+			"item": []
+		},
+		{
+			"name": "Location",
+			"item": [
+				{
+					"name": "Get Location By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/location/c6997b2b-7d4d-42e2-88c4-e841bd43039c",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"location",
+								"c6997b2b-7d4d-42e2-88c4-e841bd43039c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/location",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Location",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/location",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"location"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Location By Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/location/c6997b2b-7d4d-42e2-88c4-e841bd43039c",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"location",
+								"c6997b2b-7d4d-42e2-88c4-e841bd43039c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Location By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/location/c6997b2b-7d4d-42e2-88c4-e841bd43039c",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"location",
+								"c6997b2b-7d4d-42e2-88c4-e841bd43039c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Review",
+			"item": []
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"CurrentPassword\" : \"Whystudy123@\",\n    \"NewPassword\" : \"Whystudy123@123\",\n    \"ConfirmPassword\" : \"Whystudy123@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/change-password",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Email\" : \"tuanloc235@gmail.com\",\n    \"NewPassword\" : \"Whystudy123@\",\n    \"ConfirmPassword\" : \"Whystudy123@\",\n    \"ResetPasswordToken\" : \"CfDJ8A5NlMiu1T9BkEsKYS2O8S45R31JA097NPfi2bncwLbI/V+9Yv6c3RfdyEr5Itg4ktOjlDRx23P5ERw968Yu1EZlVcznanZsdCpfLkwUZAv+WN71AJcTMHq+il15R7I/XMuwPqhz6tcwidOXLcCQDxwY3JN5NR0bK+W1I8jOaulo0JOww+jsV4X1GzEETV039gygUmFdJxhJtUwuNsepOoQvzvoCTkpk8eRaMLqhFvoG\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/reset-password",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reset Password Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/get-reset-password-token",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"get-reset-password-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Email\" : \"tuanloc235@gmail.com\",\n    \"PersonName\" : \"NTLoc\",\n    \"Address\" : \"82 Pham Huu Chi\",\n    \"Profile Image\" : \"Profile Image\",\n    \"Description\" : \"I am Nguyen Tuan Loc\",\n    \"IsMarried\" : false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/update-user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"update-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/get-user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"get-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Restore",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/auth/restore",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"restore"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

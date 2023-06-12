@@ -3,12 +3,13 @@ using Core.Utils;
 using Core.Constants;
 using Core.Models.Image;
 using Microsoft.AspNetCore.Http;
+using Core.Exceptions;
 
 namespace Core.Services
 {
    public interface IImageService
    {
-      Task<UploadImageResponse> UploadImageService(IFormFile file);
+      Task<UploadImageResponse> UploadImageService(IFormFile? file);
       Task<CreateImageResponse> GetImageByIdService(Guid id, CancellationToken cancellationToken);
       Task<CreateImageResponse> DeleteImageByIdService(Guid id, CancellationToken cancellationToken);
       Task<CreateImageResponse> CreateImageService(UploadImageRequest request, CancellationToken cancellationToken);
@@ -21,8 +22,12 @@ namespace Core.Services
       {
          _imageRepository = imageRepository;
       }
-      public async Task<UploadImageResponse> UploadImageService(IFormFile file)
+      public async Task<UploadImageResponse> UploadImageService(IFormFile? file)
       {
+         if (file == null)
+         {
+            throw new ValidationException("File can not be null");
+         }
          // Save Original Image
          var fileName = $"{DateHelper.GetDateTimeNowString()}_high_quality{file.FileName.Replace(" ", "")}";
          var streamContent = file.OpenReadStream();
