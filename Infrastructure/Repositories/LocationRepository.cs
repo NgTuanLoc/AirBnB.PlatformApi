@@ -2,7 +2,6 @@ using Core.Domain.Entities;
 using Core.Domain.RepositoryInterface;
 using Core.Exceptions;
 using Core.Models.Location;
-using Core.Utils;
 using Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
 

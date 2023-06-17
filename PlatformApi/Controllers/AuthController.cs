@@ -34,10 +34,18 @@ namespace PlatformApi.Controllers
 
       [AllowAnonymous]
       [HttpDelete("logout")]
-      public async Task<string> Logout(CancellationToken cancellationToken)
+      public async Task<IActionResult> Logout(CancellationToken cancellationToken)
       {
          var result = await _authService.LogoutService(cancellationToken);
-         return result;
+         return Ok(result);
+      }
+
+      [Authorize]
+      [HttpPost("restore")]
+      public async Task<IActionResult> Restore(CancellationToken cancellationToken)
+      {
+         var result = await _authService.LogoutService(cancellationToken);
+         return Ok("Restore");
       }
    }
 }

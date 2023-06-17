@@ -16,5 +16,6 @@ namespace Core.Models.Image
       [Display(Name = "File")]
       [Required(ErrorMessage = "{0} can not be empty or null")]
       public IFormFile File { get; set; } = default!;
+      public Guid? RoomId { get; set; }
    }
 }

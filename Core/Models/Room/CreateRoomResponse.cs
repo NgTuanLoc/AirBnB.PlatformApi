@@ -1,5 +1,6 @@
 using Core.Domain.Entities;
 using Core.Domain.IdentityEntities;
+using Core.Models.Image;
 using Core.Models.Location;
 
 namespace Core.Models.Room
@@ -25,6 +26,6 @@ namespace Core.Models.Room
       public float Latitude { get; set; }
       public float Longitude { get; set; }
       public CreateLocationResponse? Location { get; set; }
-      public ICollection<string>? ImageList { get; set; }
+      public ICollection<CreateImageResponse>? ImageList { get; set; }
    }
 }

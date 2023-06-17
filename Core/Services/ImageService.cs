@@ -1,9 +1,9 @@
 using Core.Domain.RepositoryInterface;
 using Core.Utils;
-using Core.Constants;
 using Core.Models.Image;
 using Microsoft.AspNetCore.Http;
 using Core.Exceptions;
+using ImageEntity = Core.Domain.Entities.Image;
 
 namespace Core.Services
 {
@@ -55,30 +55,32 @@ namespace Core.Services
       {
          var urlList = await UploadImageService(request.File);
          var result = await _imageRepository.CreateImageAsync(request, urlList, cancellationToken);
-         return result;
+         return ConvertEntityIntoResponse.GetImageResponse(result);
       }
 
       public async Task<CreateImageResponse> UpdateImageByIdService(Guid id, UpdateImageRequest request, CancellationToken cancellationToken)
       {
+         ImageEntity? result = null;
          if (request.File != null)
          {
             var urlList = await UploadImageService(request.File);
-            var result = await _imageRepository.UpdateImageByIdAsync(id, request, urlList, cancellationToken);
-            return result;
+            result = await _imageRepository.UpdateImageByIdAsync(id, request, urlList, cancellationToken);
+            return ConvertEntityIntoResponse.GetImageResponse(result);
          }
-         return await _imageRepository.UpdateImageByIdAsync(id, request, null, cancellationToken);
+         result = await _imageRepository.UpdateImageByIdAsync(id, request, null, cancellationToken);
+         return ConvertEntityIntoResponse.GetImageResponse(result);
       }
 
       public async Task<CreateImageResponse> DeleteImageByIdService(Guid id, CancellationToken cancellationToken)
       {
          var result = await _imageRepository.DeleteImageByIdAsync(id, cancellationToken);
-         return result;
+         return ConvertEntityIntoResponse.GetImageResponse(result);
       }
 
       public async Task<CreateImageResponse> GetImageByIdService(Guid id, CancellationToken cancellationToken)
       {
          var result = await _imageRepository.GetImageByIdAsync(id, cancellationToken);
-         return result;
+         return ConvertEntityIntoResponse.GetImageResponse(result);
       }
    }
 }

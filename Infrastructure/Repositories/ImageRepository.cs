@@ -6,6 +6,7 @@ using Core.Exceptions;
 using Core.Models.Image;
 using Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
+using ImageEntity = Core.Domain.Entities.Image;
 
 namespace Infrastructure.Repositories
 {
@@ -41,9 +42,18 @@ namespace Infrastructure.Repositories
          return $"Delete file {filename} successfully !";
       }
 
-      public async Task<CreateImageResponse> CreateImageAsync(UploadImageRequest request, UploadImageResponse urlList, CancellationToken cancellationToken)
+      public async Task<ImageEntity> CreateImageAsync(UploadImageRequest request, UploadImageResponse urlList, CancellationToken cancellationToken)
       {
          var user = await _userRepository.GetUserAsync();
+         Room? room = null;
+
+         if (request.RoomId != null)
+         {
+            room = await _context.Room.FirstOrDefaultAsync(item => item.Id == request.RoomId, cancellationToken);
+
+            if (room == null) throw new NotFoundException($"Room with Id {request.RoomId} not found !");
+         }
+
          var image = new Image()
          {
             Id = Guid.NewGuid(),
@@ -54,52 +64,26 @@ namespace Infrastructure.Repositories
             LowQualityUrl = urlList.lowQualityUrl,
             CreatedDate = DateTime.Now,
             CreatedBy = user.Email ?? "Unknown",
-            Room = null
+            Room = room
          };
 
          var result = _context.Image.Add(image);
 
          await _context.SaveChangesAsync(cancellationToken);
 
-         return new CreateImageResponse()
-         {
-            Id = image.Id,
-            Title = image.Title,
-            Description = image.Description,
-            HighQualityUrl = image.HighQualityUrl,
-            MediumQualityUrl = image.MediumQualityUrl,
-            LowQualityUrl = image.LowQualityUrl,
-            CreatedDate = image.CreatedDate,
-            CreatedBy = image.CreatedBy,
-            ModifiedDate = image.ModifiedDate,
-            ModifiedBy = image.ModifiedBy,
-            RoomId = image?.Room?.Id
-         };
+         return image;
       }
 
-      public async Task<CreateImageResponse> GetImageByIdAsync(Guid id, CancellationToken cancellationToken)
+      public async Task<ImageEntity> GetImageByIdAsync(Guid id, CancellationToken cancellationToken)
       {
          var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
          if (image == null) throw new ValidationException("User not found !");
 
-         return new CreateImageResponse()
-         {
-            Id = image.Id,
-            Title = image.Title,
-            Description = image.Description,
-            HighQualityUrl = image.HighQualityUrl,
-            MediumQualityUrl = image.MediumQualityUrl,
-            LowQualityUrl = image.LowQualityUrl,
-            CreatedDate = image.CreatedDate,
-            CreatedBy = image.CreatedBy,
-            ModifiedDate = image.ModifiedDate,
-            ModifiedBy = image.ModifiedBy,
-            RoomId = image?.Room?.Id
-         };
+         return image;
       }
 
-      public async Task<CreateImageResponse> DeleteImageByIdAsync(Guid id, CancellationToken cancellationToken)
+      public async Task<ImageEntity> DeleteImageByIdAsync(Guid id, CancellationToken cancellationToken)
       {
          var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
@@ -112,23 +96,10 @@ namespace Infrastructure.Repositories
 
          _context.Remove(image);
          await _context.SaveChangesAsync(cancellationToken);
-         return new CreateImageResponse()
-         {
-            Id = image.Id,
-            Title = image.Title,
-            Description = image.Description,
-            HighQualityUrl = image.HighQualityUrl,
-            MediumQualityUrl = image.MediumQualityUrl,
-            LowQualityUrl = image.LowQualityUrl,
-            CreatedDate = image.CreatedDate,
-            CreatedBy = image.CreatedBy,
-            ModifiedDate = image.ModifiedDate,
-            ModifiedBy = image.ModifiedBy,
-            RoomId = image?.Room?.Id
-         };
+         return image;
       }
 
-      public async Task<CreateImageResponse> UpdateImageByIdAsync(Guid id, UpdateImageRequest request, UploadImageResponse? urlList, CancellationToken cancellationToken)
+      public async Task<ImageEntity> UpdateImageByIdAsync(Guid id, UpdateImageRequest request, UploadImageResponse? urlList, CancellationToken cancellationToken)
       {
          var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
@@ -173,20 +144,7 @@ namespace Infrastructure.Repositories
 
          await _context.SaveChangesAsync(cancellationToken);
 
-         return new CreateImageResponse()
-         {
-            Id = image.Id,
-            Title = image.Title,
-            Description = image.Description,
-            HighQualityUrl = image.HighQualityUrl,
-            MediumQualityUrl = image.MediumQualityUrl,
-            LowQualityUrl = image.LowQualityUrl,
-            CreatedDate = image.CreatedDate,
-            CreatedBy = image.CreatedBy,
-            ModifiedDate = image.ModifiedDate,
-            ModifiedBy = image.ModifiedBy,
-            RoomId = image?.Room?.Id
-         };
+         return image;
       }
    }
 }
