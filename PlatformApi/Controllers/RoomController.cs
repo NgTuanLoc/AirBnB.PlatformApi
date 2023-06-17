@@ -21,12 +21,14 @@ namespace PlatformApi.Controllers
       [HttpGet]
       public async Task<IActionResult> GetAllRoomList(CancellationToken cancellationToken)
       {
-         return Ok("GetAllRoomList");
+         var result = await _roomService.GetAllRoomListService(cancellationToken);
+         return Ok(result);
       }
       [HttpGet("{id}")]
       public async Task<IActionResult> GetRoomById([FromRoute] Guid id, CancellationToken cancellationToken)
       {
-         return Ok("GetRoomById");
+         var result = await _roomService.GetRoomByIdService(id, cancellationToken);
+         return Ok(result);
       }
       [HttpPost]
       public async Task<IActionResult> CreateRoom([FromForm] CreateRoomRequest request, CancellationToken cancellationToken)

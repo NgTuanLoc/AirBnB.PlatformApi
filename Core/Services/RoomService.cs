@@ -8,6 +8,8 @@ namespace Core.Services
    public interface IRoomService
    {
       Task<CreateRoomResponse> CreateRoomService(CreateRoomRequest request, CancellationToken cancellationToken);
+      Task<CreateRoomResponse> GetRoomByIdService(Guid id, CancellationToken cancellationToken);
+      Task<List<CreateRoomResponse>> GetAllRoomListService(CancellationToken cancellationToken);
    }
    public class RoomService : IRoomService
    {
@@ -21,6 +23,25 @@ namespace Core.Services
          var result = await _roomRepository.CreateRoomAsync(request, cancellationToken);
 
          return ConvertEntityIntoResponse.GetRoomResponse(result);
+      }
+      public async Task<CreateRoomResponse> GetRoomByIdService(Guid id, CancellationToken cancellationToken)
+      {
+         var result = await _roomRepository.GetRoomByIdAsync(id, cancellationToken);
+
+         return ConvertEntityIntoResponse.GetRoomResponse(result);
+      }
+
+      public async Task<List<CreateRoomResponse>> GetAllRoomListService(CancellationToken cancellationToken)
+      {
+         var roomList = await _roomRepository.GetAllRoomListAsync(cancellationToken);
+         var response = new List<CreateRoomResponse>();
+
+         foreach (var room in roomList)
+         {
+            response.Add(ConvertEntityIntoResponse.GetRoomResponse(room));
+         }
+
+         return response;
       }
    }
 }

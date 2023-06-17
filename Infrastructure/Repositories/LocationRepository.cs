@@ -50,15 +50,7 @@ namespace Infrastructure.Repositories
       public async Task<List<Location>> GetAllLocationAsync(CancellationToken cancellationToken)
       {
          var locationList = await _context.Location.ToListAsync(cancellationToken);
-
-         var locationListResponse = new List<Location>();
-
-         foreach (var location in locationList)
-         {
-            locationListResponse.Add(location);
-         }
-
-         return locationListResponse;
+         return locationList;
       }
 
       public async Task<Location> DeleteLocationByIdAsync(Guid id, CancellationToken cancellationToken)

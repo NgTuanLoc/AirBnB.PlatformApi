@@ -83,5 +83,25 @@ namespace Infrastructure.Repositories
          }
          return newRoom;
       }
+
+      public async Task<Room> GetRoomByIdAsync(Guid id, CancellationToken cancellationToken)
+      {
+         var room = await _context.Room
+            .Include(item => item.Location)
+            .Include(item => item.ImageList)
+            .Include(item => item.Owner)
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+         if (room == null) throw new NotFoundException($"Room with id {id} can not be found !");
+         ;
+
+         return room;
+      }
+
+      public async Task<List<Room>> GetAllRoomListAsync(CancellationToken cancellationToken)
+      {
+         var roomList = await _context.Room.ToListAsync(cancellationToken);
+         return roomList;
+      }
    }
 }

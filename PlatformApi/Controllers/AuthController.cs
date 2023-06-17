@@ -44,8 +44,14 @@ namespace PlatformApi.Controllers
       [HttpPost("restore")]
       public async Task<IActionResult> Restore(CancellationToken cancellationToken)
       {
-         var result = await _authService.LogoutService(cancellationToken);
          return Ok("Restore");
+      }
+
+      [Authorize]
+      [HttpPost("seed")]
+      public async Task<IActionResult> Seed(CancellationToken cancellationToken)
+      {
+         return Ok("Seed");
       }
    }
 }

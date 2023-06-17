@@ -38,12 +38,14 @@ namespace PlatformApi.Extensions
          services.AddSingleton<IAuthorizationMiddlewareResultHandler, UnauthorizedHandler>();
 
          // Repositories Layer
+         services.AddScoped<IDatabaseRepository, DatabaseRepository>();
          services.AddScoped<IImageRepository, ImageRepository>();
          services.AddScoped<IUserRepository, UserRepository>();
          services.AddScoped<ILocationRepository, LocationRepository>();
          services.AddScoped<IRoomRepository, RoomRepository>();
 
          // Services Layer
+         services.AddScoped<IDatabaseService, DatabaseService>();
          services.AddScoped<IAuthService, AuthService>();
          services.AddScoped<IImageService, ImageService>();
          services.AddScoped<ILocationService, LocationService>();
