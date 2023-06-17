@@ -9,7 +9,7 @@ namespace Core.Services
 {
    public interface IUserService
    {
-      Task<ApplicationUser> GetUser();
+      Task<ApplicationUser> GetUserService();
       Task<IdentityResult> ChangePasswordService(ChangePasswordRequest request, CancellationToken cancellationToken);
       Task<IdentityResult> ResetPasswordService(ResetPasswordRequest request, CancellationToken cancellationToken);
       Task<string> GetResetPasswordTokenService();
@@ -26,7 +26,7 @@ namespace Core.Services
          _userRepository = userRepository;
       }
 
-      public async Task<ApplicationUser> GetUser()
+      public async Task<ApplicationUser> GetUserService()
       {
          var user = await _userRepository.GetUserAsync();
          return user;

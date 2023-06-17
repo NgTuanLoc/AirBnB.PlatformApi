@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
          _userRepository = userRepository;
          _imageRepository = imageRepository;
       }
-      public async Task<CreateLocationResponse> CreateLocationAsync(CreateLocationRequest request, string? imageUrl, CancellationToken cancellationToken)
+      public async Task<Location> CreateLocationAsync(CreateLocationRequest request, string? imageUrl, CancellationToken cancellationToken)
       {
          var user = await _userRepository.GetUserAsync();
 
@@ -30,39 +30,39 @@ namespace Infrastructure.Repositories
             Province = request.Province,
             Country = request.Country,
             CreatedDate = DateTime.Now,
-            Image = imageUrl,
+            // Image = imageUrl,
             CreatedBy = user.Email ?? "Unknown",
          };
 
          _context.Location.Add(newLocation);
          await _context.SaveChangesAsync(cancellationToken);
 
-         return GetLocationResponse(newLocation);
+         return newLocation;
       }
-      public async Task<CreateLocationResponse> GetLocationByIdAsync(Guid id, CancellationToken cancellationToken)
+      public async Task<Location> GetLocationByIdAsync(Guid id, CancellationToken cancellationToken)
       {
          var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
          if (location == null) throw new NotFoundException($"Location with id {id} can not be found !");
 
-         return GetLocationResponse(location);
+         return location;
       }
 
-      public async Task<List<CreateLocationResponse>> GetAllLocationAsync(CancellationToken cancellationToken)
+      public async Task<List<Location>> GetAllLocationAsync(CancellationToken cancellationToken)
       {
          var locationList = await _context.Location.ToListAsync(cancellationToken);
 
-         var locationListResponse = new List<CreateLocationResponse>();
+         var locationListResponse = new List<Location>();
 
          foreach (var location in locationList)
          {
-            locationListResponse.Add(GetLocationResponse(location));
+            locationListResponse.Add(location);
          }
 
          return locationListResponse;
       }
 
-      public async Task<CreateLocationResponse> DeleteLocationByIdAsync(Guid id, CancellationToken cancellationToken)
+      public async Task<Location> DeleteLocationByIdAsync(Guid id, CancellationToken cancellationToken)
       {
          var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
@@ -70,10 +70,10 @@ namespace Infrastructure.Repositories
 
          _context.Remove(location);
          await _context.SaveChangesAsync(cancellationToken);
-         return GetLocationResponse(location);
+         return location;
       }
 
-      public async Task<CreateLocationResponse> UpdateLocationByIdAsync(Guid id, UpdateLocationRequest request, string? imageUrl, CancellationToken cancellationToken)
+      public async Task<Location> UpdateLocationByIdAsync(Guid id, UpdateLocationRequest request, string? imageUrl, CancellationToken cancellationToken)
       {
          var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
@@ -90,23 +90,7 @@ namespace Infrastructure.Repositories
 
          await _context.SaveChangesAsync(cancellationToken);
 
-         return GetLocationResponse(location);
-      }
-
-      private CreateLocationResponse GetLocationResponse(Location location)
-      {
-         return new CreateLocationResponse()
-         {
-            Id = location.Id,
-            Name = location.Name,
-            Province = location.Province,
-            Country = location.Country,
-            Image = location.Image,
-            CreatedDate = location.CreatedDate,
-            CreatedBy = location.CreatedBy,
-            ModifiedDate = location.ModifiedDate,
-            ModifiedBy = location.ModifiedBy,
-         };
+         return location;
       }
    }
 }

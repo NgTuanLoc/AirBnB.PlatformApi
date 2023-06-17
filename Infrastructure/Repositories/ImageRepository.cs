@@ -103,7 +103,7 @@ namespace Infrastructure.Repositories
       {
          var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
 
-         if (image == null) throw new ValidationException("User not found !");
+         if (image == null) throw new ValidationException("Image not found !");
 
          // Remove Image Data From Blob Storage
          await DeleteImageFileFromBlobStorageAsync(image.HighQualityUrl);

@@ -1,5 +1,6 @@
 using Core.Domain.RepositoryInterface;
 using Core.Models.Location;
+using Core.Utils;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Core.Services
@@ -26,25 +27,32 @@ namespace Core.Services
       {
          var imageUrlList = await _imageService.UploadImageService(request.File);
          var result = await _locationRepository.CreateLocationAsync(request, imageUrlList.highQualityUrl, cancellationToken);
-         return result;
+         return ConvertEntityIntoResponse.GetLocationResponse(result);
       }
 
       public async Task<CreateLocationResponse> GetLocationByIdService(Guid id, CancellationToken cancellationToken)
       {
          var result = await _locationRepository.GetLocationByIdAsync(id, cancellationToken);
-         return result;
+         return ConvertEntityIntoResponse.GetLocationResponse(result);
       }
 
       public async Task<List<CreateLocationResponse>> GetAllLocationService(CancellationToken cancellationToken)
       {
          var result = await _locationRepository.GetAllLocationAsync(cancellationToken);
-         return result;
+
+         var response = new List<CreateLocationResponse>();
+
+         foreach (var location in result)
+         {
+            response.Add(ConvertEntityIntoResponse.GetLocationResponse(location));
+         }
+         return response;
       }
 
       public async Task<CreateLocationResponse> DeleteLocationByIdService(Guid id, CancellationToken cancellationToken)
       {
          var result = await _locationRepository.DeleteLocationByIdAsync(id, cancellationToken);
-         return result;
+         return ConvertEntityIntoResponse.GetLocationResponse(result);
       }
 
       public async Task<CreateLocationResponse> UpdateLocationByIdService(Guid id, UpdateLocationRequest request, CancellationToken cancellationToken)
@@ -58,7 +66,7 @@ namespace Core.Services
          }
 
          var result = await _locationRepository.UpdateLocationByIdAsync(id, request, imageUrl, cancellationToken);
-         return result;
+         return ConvertEntityIntoResponse.GetLocationResponse(result);
       }
    }
 }

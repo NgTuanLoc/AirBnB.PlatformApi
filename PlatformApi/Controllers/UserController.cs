@@ -19,7 +19,7 @@ namespace PlatformApi.Controllers
       [HttpGet("get-user")]
       public async Task<IActionResult> GetUser(CancellationToken cancellationToken)
       {
-         var user = await _userService.GetUser();
+         var user = await _userService.GetUserService();
          return Ok(user);
       }
       [HttpPost("change-password")]
