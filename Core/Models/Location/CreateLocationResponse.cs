@@ -7,5 +7,6 @@ namespace Core.Models.Location
       public string Name { get; set; } = default!;
       public string Province { get; set; } = default!;
       public string Country { get; set; } = default!;
+      public string? Image { get; set; } = default!;
    }
 }
