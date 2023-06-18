@@ -5,6 +5,7 @@ using Core.Models.Image;
 using Core.Models.Room;
 using Core.Services;
 using Infrastructure.DbContext;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using ImageEntity = Core.Domain.Entities.Image;
 
@@ -66,20 +67,8 @@ namespace Infrastructure.Repositories
          // Create Image
          if (request.ImageList != null)
          {
-            newRoom.ImageList = new List<ImageEntity>();
-            foreach (var image in request.ImageList)
-            {
-               var uploadImageRequest = new UploadImageRequest()
-               {
-                  Title = $"{newRoom.Name} Image",
-                  Description = $"{newRoom.Name} Description",
-                  File = image,
-                  RoomId = newRoom.Id
-               };
-               var urlList = await _imageService.UploadImageService(image);
-               var newImage = await _imageRepository.CreateImageAsync(uploadImageRequest, urlList, cancellationToken);
-               newRoom.ImageList.Add(newImage);
-            }
+            var createdImageList = await CreateImageListForRoom(newRoom, request.ImageList, cancellationToken);
+            newRoom.ImageList = createdImageList;
          }
          return newRoom;
       }
@@ -102,6 +91,103 @@ namespace Infrastructure.Repositories
       {
          var roomList = await _context.Room.ToListAsync(cancellationToken);
          return roomList;
+      }
+
+      public async Task<Room> DeleteRoomByIdAsync(Guid id, CancellationToken cancellationToken)
+      {
+         var room = await _context.Room
+            .Include(item => item.Location)
+            .Include(item => item.ImageList)
+            .Include(item => item.Owner)
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+         if (room == null) throw new NotFoundException($"Room with id {id} can not be found !");
+         ;
+
+         if (room.ImageList != null)
+         {
+            foreach (var image in room.ImageList)
+            {
+               await _imageService.DeleteImageByIdService(image.Id, cancellationToken);
+            }
+         }
+
+         _context.Room.Remove(room);
+         await _context.SaveChangesAsync(cancellationToken);
+
+         return room;
+      }
+
+      public async Task<Room> UpdateRoomByIdAsync(Guid id, UpdateRoomRequest request, CancellationToken cancellationToken)
+      {
+         var room = await _context.Room
+            .Include(item => item.Location)
+            .Include(item => item.ImageList)
+            .Include(item => item.Owner)
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+         if (room == null) throw new NotFoundException($"Room with id {id} can not be found !");
+         ;
+
+         // Update Core Field
+         room.Name = request.Name;
+         room.HomeType = request.HomeType ?? room.HomeType;
+         room.RoomType = request.RoomType ?? room.RoomType;
+         room.TotalOccupancy = request.TotalOccupancy ?? room.TotalOccupancy;
+         room.TotalBedrooms = request.TotalBedrooms ?? room.TotalBedrooms;
+         room.TotalBathrooms = request.TotalBathrooms ?? room.TotalBathrooms;
+         room.Summary = request.Summary ?? room.Summary;
+         room.Address = request.Address ?? room.Address;
+         room.HasTV = request.HasTV ?? room.HasTV;
+         room.HasKitchen = request.HasKitchen ?? room.HasKitchen;
+         room.HasAirCon = request.HasAirCon ?? room.HasAirCon;
+         room.HasHeating = request.HasHeating ?? room.HasHeating;
+         room.HasInternet = request.HasInternet ?? room.HasInternet;
+         room.Price = request.Price ?? room.Price;
+         room.Latitude = request.Latitude ?? room.Latitude;
+         room.Longitude = request.Longitude ?? room.Longitude;
+
+         if (request.ImageList != null)
+         {
+            var createdImageList = await CreateImageListForRoom(room, request.ImageList, cancellationToken);
+            room.ImageList = createdImageList;
+         }
+
+         if (request.LocationId != null)
+         {
+            var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == request.LocationId, cancellationToken);
+
+            if (location == null) throw new NotFoundException($"Location with id {request.LocationId} can not be found !");
+
+            room.Location = location;
+         }
+
+         var user = await _userService.GetUserService();
+         room.ModifiedBy = user.Email;
+         room.ModifiedDate = DateTime.Now;
+
+         await _context.SaveChangesAsync(cancellationToken);
+
+         return room;
+      }
+
+      private async Task<List<ImageEntity>> CreateImageListForRoom(Room room, List<IFormFile> imageList, CancellationToken cancellationToken)
+      {
+         var createdImageList = new List<ImageEntity>();
+         foreach (var image in imageList)
+         {
+            var uploadImageRequest = new UploadImageRequest()
+            {
+               Title = $"{room.Name} Image",
+               Description = $"{room.Name} Description",
+               File = image,
+               RoomId = room.Id
+            };
+            var urlList = await _imageService.UploadImageService(image);
+            var newImage = await _imageRepository.CreateImageAsync(uploadImageRequest, urlList, cancellationToken);
+            createdImageList.Add(newImage);
+         }
+         return createdImageList;
       }
    }
 }

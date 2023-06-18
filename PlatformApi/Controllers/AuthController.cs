@@ -11,10 +11,12 @@ namespace PlatformApi.Controllers
    {
       private readonly ILogger<AuthController> _logger;
       private readonly IAuthService _authService;
-      public AuthController(ILogger<AuthController> logger, IAuthService authService)
+      private readonly IDatabaseService _databaseService;
+      public AuthController(ILogger<AuthController> logger, IAuthService authService, IDatabaseService databaseService)
       {
          _logger = logger;
          _authService = authService;
+         _databaseService = databaseService;
       }
       [AllowAnonymous]
       [HttpPost("register")]
@@ -44,7 +46,8 @@ namespace PlatformApi.Controllers
       [HttpPost("restore")]
       public async Task<IActionResult> Restore(CancellationToken cancellationToken)
       {
-         return Ok("Restore");
+         var result = await _databaseService.RestoreService(cancellationToken);
+         return Ok(result);
       }
 
       [Authorize]

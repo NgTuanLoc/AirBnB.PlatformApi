@@ -10,6 +10,8 @@ namespace Core.Services
       Task<CreateRoomResponse> CreateRoomService(CreateRoomRequest request, CancellationToken cancellationToken);
       Task<CreateRoomResponse> GetRoomByIdService(Guid id, CancellationToken cancellationToken);
       Task<List<CreateRoomResponse>> GetAllRoomListService(CancellationToken cancellationToken);
+      Task<CreateRoomResponse> DeleteRoomByIdService(Guid id, CancellationToken cancellationToken);
+      Task<CreateRoomResponse> UpdateRoomByIdService(Guid id, UpdateRoomRequest request, CancellationToken cancellationToken);
    }
    public class RoomService : IRoomService
    {
@@ -42,6 +44,18 @@ namespace Core.Services
          }
 
          return response;
+      }
+
+      public async Task<CreateRoomResponse> DeleteRoomByIdService(Guid id, CancellationToken cancellationToken)
+      {
+         var result = await _roomRepository.DeleteRoomByIdAsync(id, cancellationToken);
+         return ConvertEntityIntoResponse.GetRoomResponse(result);
+      }
+
+      public async Task<CreateRoomResponse> UpdateRoomByIdService(Guid id, UpdateRoomRequest request, CancellationToken cancellationToken)
+      {
+         var result = await _roomRepository.UpdateRoomByIdAsync(id, request, cancellationToken);
+         return ConvertEntityIntoResponse.GetRoomResponse(result);
       }
    }
 }

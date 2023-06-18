@@ -38,7 +38,7 @@ namespace Core.Utils
 
          return new CreateRoomResponse()
          {
-            Id = Guid.NewGuid(),
+            Id = room.Id,
             Name = room.Name,
             HomeType = room.HomeType,
             RoomType = room.RoomType,

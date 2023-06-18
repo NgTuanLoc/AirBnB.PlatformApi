@@ -37,14 +37,16 @@ namespace PlatformApi.Controllers
          return Ok(result);
       }
       [HttpPatch("{id}")]
-      public async Task<IActionResult> UpdateRoomById([FromRoute] Guid id, CancellationToken cancellationToken)
+      public async Task<IActionResult> UpdateRoomById([FromRoute] Guid id, [FromForm] UpdateRoomRequest request, CancellationToken cancellationToken)
       {
-         return Ok("UpdateRoomById");
+         var result = await _roomService.UpdateRoomByIdService(id, request, cancellationToken);
+         return Ok(result);
       }
       [HttpDelete("{id}")]
       public async Task<IActionResult> DeleteRoomById([FromRoute] Guid id, CancellationToken cancellationToken)
       {
-         return Ok("DeleteRoomById");
+         var result = await _roomService.DeleteRoomByIdService(id, cancellationToken);
+         return Ok(result);
       }
    }
 }
