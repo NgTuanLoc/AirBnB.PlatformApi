@@ -1,8 +1,6 @@
-using Core.Domain.IdentityEntities;
 using Core.Models.Room;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers

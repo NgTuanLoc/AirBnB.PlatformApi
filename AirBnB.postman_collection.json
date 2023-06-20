@@ -10,7 +10,7 @@
 			"name": "Room",
 			"item": [
 				{
-					"name": "Get Room List",
+					"name": "Get Room By Id",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true,
 						"disabledSystemHeaders": {}
@@ -30,13 +30,328 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{URL}}/room/getRoomList",
+							"raw": "{{URL}}/room/789e7915-f39c-4445-8fa5-22708048e2aa",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"room",
-								"getRoomList"
+								"789e7915-f39c-4445-8fa5-22708048e2aa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Room",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true,
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{URL}}/room",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Room",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Name",
+									"value": "Room with multiple image 123",
+									"type": "text"
+								},
+								{
+									"key": "HomeType",
+									"value": "HomeType 1",
+									"type": "text"
+								},
+								{
+									"key": "RoomType",
+									"value": "RoomType 1",
+									"type": "text"
+								},
+								{
+									"key": "TotalOccupancy",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "TotalBedrooms",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "Summary",
+									"value": "Summary 1",
+									"type": "text"
+								},
+								{
+									"key": "Address",
+									"value": "Address 1",
+									"type": "text"
+								},
+								{
+									"key": "HasTV",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "HasKitchen",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "HasAircon",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "HasHeating",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "HasInternet",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "Price",
+									"value": "1230.212",
+									"type": "text"
+								},
+								{
+									"key": "Latitude",
+									"value": "3123",
+									"type": "text"
+								},
+								{
+									"key": "Longigude",
+									"value": "89231",
+									"type": "text"
+								},
+								{
+									"key": "LocationId",
+									"value": "860de3b2-1e61-456a-9cf6-98491047ae66",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "ImageList",
+									"type": "file",
+									"src": [
+										"/Users/macintoshhd/Desktop/Images/Eyes 1 - Philipe Cavalcante.jpg",
+										"/Users/macintoshhd/Desktop/Images/Eyes B - Ryan Holloway.jpg",
+										"/Users/macintoshhd/Desktop/Images/Levels 2 - Jeff Finley.jpg",
+										"/Users/macintoshhd/Desktop/Images/Screen Shot 2022-10-14 at 20.51.52.png",
+										"/Users/macintoshhd/Desktop/Images/Screen Shot 2022-10-14 at 20.52.44.png"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/room",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"room"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Room By Id",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Name",
+									"value": "Room with multiple image update",
+									"type": "text"
+								},
+								{
+									"key": "HomeType",
+									"value": "HomeType 1",
+									"type": "text"
+								},
+								{
+									"key": "RoomType",
+									"value": "RoomType 1",
+									"type": "text"
+								},
+								{
+									"key": "TotalOccupancy",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "TotalBedrooms",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "Summary",
+									"value": "Summary 1",
+									"type": "text"
+								},
+								{
+									"key": "Address",
+									"value": "Address 1",
+									"type": "text"
+								},
+								{
+									"key": "HasTV",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "HasKitchen",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "HasAircon",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "HasHeating",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "HasInternet",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "Price",
+									"value": "1230.212",
+									"type": "text"
+								},
+								{
+									"key": "Latitude",
+									"value": "3123",
+									"type": "text"
+								},
+								{
+									"key": "Longigude",
+									"value": "89231",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "LocationId",
+									"value": "860de3b2-1e61-456a-9cf6-98491047ae66",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "ImageList",
+									"type": "file",
+									"src": [
+										"/Users/macintoshhd/Desktop/Images/Eyes 1 - Philipe Cavalcante.jpg",
+										"/Users/macintoshhd/Desktop/Images/Eyes B - Ryan Holloway.jpg",
+										"/Users/macintoshhd/Desktop/Images/Levels 2 - Jeff Finley.jpg",
+										"/Users/macintoshhd/Desktop/Images/Screen Shot 2022-10-14 at 20.51.52.png",
+										"/Users/macintoshhd/Desktop/Images/Screen Shot 2022-10-14 at 20.52.44.png"
+									],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/room/32748e9b-63d9-49e8-ad01-d0fc2ce07698",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"room",
+								"32748e9b-63d9-49e8-ad01-d0fc2ce07698"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Room By Id",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{URL}}/room/6e45b08a-cbbe-4260-a48b-2f4803e184b0",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"room",
+								"6e45b08a-cbbe-4260-a48b-2f4803e184b0"
 							]
 						}
 					},
@@ -118,60 +433,60 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Restore",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "AirBnBToken",
+								"value": "fsdfa",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/auth/restore",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"restore"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Seed",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "AirBnBToken",
+								"value": "fsdfa",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/auth/seed",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"seed"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
 			"name": "Image",
 			"item": [
-				{
-					"name": "Upload Image List",
-					"protocolProfileBehavior": {
-						"disabledSystemHeaders": {}
-					},
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "multipart/form-data",
-								"type": "text",
-								"disabled": true
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "File",
-									"type": "file",
-									"src": "/Users/macintoshhd/Desktop/Images/Levels 2 - Jeff Finley.jpg"
-								},
-								{
-									"key": "FileName",
-									"value": "AirBnB",
-									"type": "text"
-								},
-								{
-									"key": "Description",
-									"value": "loctest",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{URL}}/image/upload-image",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"image",
-								"upload-image"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Upload A Single Image",
 					"protocolProfileBehavior": {
@@ -304,13 +619,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/location/c6997b2b-7d4d-42e2-88c4-e841bd43039c",
+							"raw": "{{URL}}/location/2443ddc2-27a5-4b6f-9368-eb4e8344f3ee",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"location",
-								"c6997b2b-7d4d-42e2-88c4-e841bd43039c"
+								"2443ddc2-27a5-4b6f-9368-eb4e8344f3ee"
 							]
 						}
 					},
@@ -338,6 +653,31 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Name",
+									"value": "Location 2",
+									"type": "text"
+								},
+								{
+									"key": "Province",
+									"value": "Province 2",
+									"type": "text"
+								},
+								{
+									"key": "Country",
+									"value": "Thai Lan",
+									"type": "text"
+								},
+								{
+									"key": "File",
+									"type": "file",
+									"src": "/Users/macintoshhd/Desktop/Images/Levels 2 - Jeff Finley.jpg"
+								}
+							]
+						},
 						"url": {
 							"raw": "{{URL}}/location",
 							"host": [
@@ -355,14 +695,34 @@
 					"request": {
 						"method": "PATCH",
 						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Name",
+									"value": "Update Location 1",
+									"type": "text"
+								},
+								{
+									"key": "Province",
+									"value": "Update Province 1",
+									"type": "text"
+								},
+								{
+									"key": "Country",
+									"value": "Update Country 1",
+									"type": "text"
+								}
+							]
+						},
 						"url": {
-							"raw": "{{URL}}/location/c6997b2b-7d4d-42e2-88c4-e841bd43039c",
+							"raw": "{{URL}}/location/2443ddc2-27a5-4b6f-9368-eb4e8344f3ee",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"location",
-								"c6997b2b-7d4d-42e2-88c4-e841bd43039c"
+								"2443ddc2-27a5-4b6f-9368-eb4e8344f3ee"
 							]
 						}
 					},
@@ -374,13 +734,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/location/c6997b2b-7d4d-42e2-88c4-e841bd43039c",
+							"raw": "{{URL}}/location/2443ddc2-27a5-4b6f-9368-eb4e8344f3ee",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"location",
-								"c6997b2b-7d4d-42e2-88c4-e841bd43039c"
+								"2443ddc2-27a5-4b6f-9368-eb4e8344f3ee"
 							]
 						}
 					},
@@ -534,24 +894,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "Restore",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/auth/restore",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"auth",
-						"restore"
-					]
-				}
-			},
-			"response": []
 		}
 	]
 }
