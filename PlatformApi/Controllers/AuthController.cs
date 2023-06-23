@@ -54,7 +54,9 @@ namespace PlatformApi.Controllers
       [HttpPost("seed")]
       public async Task<IActionResult> Seed(CancellationToken cancellationToken)
       {
-         return Ok("Seed");
+         var result = await _databaseService.SeedingService(cancellationToken);
+         
+         return Ok(result);
       }
    }
 }

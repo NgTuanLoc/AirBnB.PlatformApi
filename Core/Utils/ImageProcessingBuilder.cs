@@ -1,4 +1,3 @@
-using System.Globalization;
 using Core.Constants;
 using Core.Exceptions;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +7,8 @@ namespace Core.Utils
 {
    public interface IImageProcessingBuilder
    {
-      ImageProcessingBuilder LoadImage(IFormFile imageFile);
+      ImageProcessingBuilder LoadImageFromFile(IFormFile imageFile);
+      ImageProcessingBuilder LoadImageFromStream(Stream imageStream);
       ImageProcessingBuilder ResizeImage(int width, int height);
       ImageProcessingBuilder BlurImage(float sigma);
       Stream GetImageStreamWithQuality(int quality);
@@ -21,10 +21,16 @@ namespace Core.Utils
          _processedImage = null;
       }
 
-      public ImageProcessingBuilder LoadImage(IFormFile imageFile)
+      public ImageProcessingBuilder LoadImageFromFile(IFormFile imageFile)
       {
          var streamContent = imageFile.OpenReadStream();
          _processedImage = Image.Load(streamContent);
+         return this;
+      }
+
+      public  ImageProcessingBuilder LoadImageFromStream(Stream imageStream)
+      {
+         _processedImage = Image.Load(imageStream);
          return this;
       }
 
@@ -70,21 +76,41 @@ namespace Core.Utils
    }
    public static class ProcessedImageFactory
    {
-      public static Stream TransformToMediumQualityImage(IFormFile file)
+      public static Stream TransformToMediumQualityImageFromFile(IFormFile file)
       {
          var processedImageBuilder = new ImageProcessingBuilder();
          var processedImageStream = processedImageBuilder
-                                 .LoadImage(file)
+                                 .LoadImageFromFile(file)
                                  .ResizeImage(ProcessingMediumQualityImageConstants.RESIZE_WIDTH, ProcessingMediumQualityImageConstants.RESIZE_HEIGHT)
                                  .BlurImage(ProcessingMediumQualityImageConstants.GAUSSIAN_BLUR_SIGMA)
                                  .GetImageStreamWithQuality(ProcessingMediumQualityImageConstants.IMAGE_QUALITY);
          return processedImageStream;
       }
-      public static Stream TransformToLowQualityImage(IFormFile file)
+      public static Stream TransformToLowQualityImageFromFile(IFormFile file)
       {
          var processedImageBuilder = new ImageProcessingBuilder();
          var processedImageStream = processedImageBuilder
-                                 .LoadImage(file)
+                                 .LoadImageFromFile(file)
+                                 .ResizeImage(ProcessingLowQualityImageConstants.RESIZE_WIDTH, ProcessingLowQualityImageConstants.RESIZE_HEIGHT)
+                                 .BlurImage(ProcessingLowQualityImageConstants.GAUSSIAN_BLUR_SIGMA)
+                                 .GetImageStreamWithQuality(ProcessingLowQualityImageConstants.IMAGE_QUALITY);
+         return processedImageStream;
+      }
+      public static Stream TransformToMediumQualityImageFromStream(Stream stream)
+      {
+         var processedImageBuilder = new ImageProcessingBuilder();
+         var processedImageStream = processedImageBuilder
+                                 .LoadImageFromStream(stream)
+                                 .ResizeImage(ProcessingMediumQualityImageConstants.RESIZE_WIDTH, ProcessingMediumQualityImageConstants.RESIZE_HEIGHT)
+                                 .BlurImage(ProcessingMediumQualityImageConstants.GAUSSIAN_BLUR_SIGMA)
+                                 .GetImageStreamWithQuality(ProcessingMediumQualityImageConstants.IMAGE_QUALITY);
+         return processedImageStream;
+      }
+      public static Stream TransformToLowQualityImageFromStream(Stream stream)
+      {
+         var processedImageBuilder = new ImageProcessingBuilder();
+         var processedImageStream = processedImageBuilder
+                                 .LoadImageFromStream(stream)
                                  .ResizeImage(ProcessingLowQualityImageConstants.RESIZE_WIDTH, ProcessingLowQualityImageConstants.RESIZE_HEIGHT)
                                  .BlurImage(ProcessingLowQualityImageConstants.GAUSSIAN_BLUR_SIGMA)
                                  .GetImageStreamWithQuality(ProcessingLowQualityImageConstants.IMAGE_QUALITY);

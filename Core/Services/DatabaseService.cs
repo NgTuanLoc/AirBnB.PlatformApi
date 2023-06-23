@@ -5,6 +5,7 @@ namespace Core.Services
    public interface IDatabaseService
    {
       Task<string> RestoreService(CancellationToken cancellationToken);
+      Task <string> SeedingService(CancellationToken cancellationToken);
    }
    public class DatabaseService : IDatabaseService
    {
@@ -19,5 +20,12 @@ namespace Core.Services
 
          return result;
       }
-   }
+
+        public async Task<string> SeedingService(CancellationToken cancellationToken)
+        {
+         var result = await _databaseRepository.SeedingAsync(cancellationToken);
+         
+         return result;
+        }
+    }
 }

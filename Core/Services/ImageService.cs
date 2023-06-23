@@ -34,12 +34,12 @@ namespace Core.Services
          var highQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(streamContent, fileName);
 
          // Save Medium Size Image
-         var processedMediumQualityImageStream = ProcessedImageFactory.TransformToMediumQualityImage(file);
+         var processedMediumQualityImageStream = ProcessedImageFactory.TransformToMediumQualityImageFromFile(file);
          var processedMediumQualityFileName = $"{DateHelper.GetDateTimeNowString()}_medium_quality_{file.FileName.Replace(" ", "")}";
          var mediumQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedMediumQualityImageStream, processedMediumQualityFileName);
 
          // Save Small Size Image
-         var processedImageStream = ProcessedImageFactory.TransformToLowQualityImage(file);
+         var processedImageStream = ProcessedImageFactory.TransformToLowQualityImageFromFile(file);
          var processedFileName = $"{DateHelper.GetDateTimeNowString()}_low_quality_{file.FileName.Replace(" ", "")}";
          var lowQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedImageStream, processedFileName);
 

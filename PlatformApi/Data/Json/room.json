@@ -1,0 +1,22 @@
+[
+	{
+		"Name": "Name",
+		"HomeType": "HomeType",
+		"RoomType": "RoomType",
+		"TotalOccupancy": 5,
+		"TotalBedrooms": 3,
+		"TotalBathrooms": 2,
+		"Summary": "Summary",
+		"Address": "Address",
+		"HasTV": true,
+		"HasKitchen": false,
+		"HasAirCon": false,
+		"HasHeating": false,
+		"HasInternet": false,
+		"Price": 123,
+		"latitude": 123,
+		"longitude": 123,
+		"ImagePath": "./Data/Images/Room/1/",
+		"LocationName": "Location 1"
+	}
+]
