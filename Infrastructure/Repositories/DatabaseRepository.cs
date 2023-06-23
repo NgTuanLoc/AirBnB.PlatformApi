@@ -12,192 +12,196 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class DatabaseRepository : IDatabaseRepository
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly BlobServiceClient _blobServiceClient;
-        private readonly IUserService _userService;
-        private readonly IImageRepository _imageRepository;
-        public DatabaseRepository(ApplicationDbContext context, BlobServiceClient blobServiceClient, IUserService userService, IImageRepository imageRepository, IImageService imageService)
-        {
-            _context = context;
-            _blobServiceClient = blobServiceClient;
-            _userService = userService;
-            _imageRepository = imageRepository;
-        }
-        public async Task<string> RestoreAsync(CancellationToken cancellationToken)
-        {
-            var allRoomList = await _context.Room.ToListAsync(cancellationToken);
-            var allLocationList = await _context.Location.ToListAsync(cancellationToken);
-            var allImageList = await _context.Image.ToListAsync(cancellationToken);
-            var allReservationList = await _context.Reservation.ToListAsync(cancellationToken);
-            var allReviewList = await _context.Review.ToListAsync(cancellationToken);
+   public class DatabaseRepository : IDatabaseRepository
+   {
+      private readonly ApplicationDbContext _context;
+      private readonly BlobServiceClient _blobServiceClient;
+      private readonly IUserService _userService;
+      private readonly IImageRepository _imageRepository;
+      public DatabaseRepository(ApplicationDbContext context, BlobServiceClient blobServiceClient, IUserService userService, IImageRepository imageRepository, IImageService imageService)
+      {
+         _context = context;
+         _blobServiceClient = blobServiceClient;
+         _userService = userService;
+         _imageRepository = imageRepository;
+      }
+      public async Task<string> RestoreAsync(CancellationToken cancellationToken)
+      {
+         var allRoomList = await _context.Room.ToListAsync(cancellationToken);
+         var allLocationList = await _context.Location.ToListAsync(cancellationToken);
+         var allImageList = await _context.Image.ToListAsync(cancellationToken);
+         var allReservationList = await _context.Reservation.ToListAsync(cancellationToken);
+         var allReviewList = await _context.Review.ToListAsync(cancellationToken);
 
-            _context.RemoveRange(allRoomList);
-            _context.RemoveRange(allLocationList);
-            _context.RemoveRange(allImageList);
-            _context.RemoveRange(allReservationList);
-            _context.RemoveRange(allReviewList);
+         _context.RemoveRange(allRoomList);
+         _context.RemoveRange(allLocationList);
+         _context.RemoveRange(allImageList);
+         _context.RemoveRange(allReservationList);
+         _context.RemoveRange(allReviewList);
 
-            await DeleteAllDataInBlobStorageAsync();
+         await DeleteAllDataInBlobStorageAsync();
 
-            await _context.SaveChangesAsync(cancellationToken);
-            return "Restore Successful";
-        }
+         await _context.SaveChangesAsync(cancellationToken);
+         return "Restore Successful";
+      }
 
-        private async Task DeleteAllDataInBlobStorageAsync()
-        {
-            var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(ConfigConstants.BlobContainer);
+      private async Task DeleteAllDataInBlobStorageAsync()
+      {
+         var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(ConfigConstants.BlobContainer);
 
-            await foreach (var blobItem in blobStorageContainer.GetBlobsAsync())
+         await foreach (var blobItem in blobStorageContainer.GetBlobsAsync())
+         {
+            await blobStorageContainer.DeleteBlobAsync(blobItem.Name);
+         }
+      }
+
+      public async Task<string> SeedingAsync(CancellationToken cancellationToken)
+      {
+         var user = await _userService.GetUserService();
+         await SeedingLocationAsync(user, cancellationToken);
+         await SeedingRoomAsync(user, cancellationToken);
+         return "Seeding Data Successful";
+      }
+
+      private async Task SeedingLocationAsync(ApplicationUser user, CancellationToken cancellationToken)
+      {
+         string locationJson = System.IO.File.ReadAllText("./Data/Json/location.json");
+         List<LocationModel>? locationList = System.Text.Json.JsonSerializer.Deserialize<List<LocationModel>>(locationJson);
+
+         if (locationList == null)
+         {
+            throw new ValidationException("Fail to seeding room data");
+         }
+
+         foreach (var location in locationList)
+         {
+            var imageStream = ImageToStream(location.ImagePath);
+            Console.WriteLine("fileName room", location.ImagePath);
+
+            var imageName = $"{DateHelper.GetDateTimeNowString()}_{location.ImagePath.Split("/").Last()}";
+            var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName);
+
+            var newLocation = new Location()
             {
-                await blobStorageContainer.DeleteBlobAsync(blobItem.Name);
-            }
-        }
-
-        public async Task<string> SeedingAsync(CancellationToken cancellationToken)
-        {
-            var user = await _userService.GetUserService();
-            // await SeedingLocationAsync(user, cancellationToken);
-            await SeedingRoomAsync(user, cancellationToken);
-            return "Seeding Data Successful";
-        }
-
-        private async Task SeedingLocationAsync(ApplicationUser user, CancellationToken cancellationToken)
-        {
-            string locationJson = System.IO.File.ReadAllText("./Data/Json/location.json");
-            List<LocationModel>? locationList = System.Text.Json.JsonSerializer.Deserialize<List<LocationModel>>(locationJson);
-
-            if (locationList == null)
-            {
-                throw new ValidationException("Fail to seeding room data");
-            }
-
-            foreach (var location in locationList)
-            {
-                var imageStream = ImageToStream(location.ImagePath);
-                var imageName = $"{DateHelper.GetDateTimeNowString()}_{location.ImagePath.Split("/").Last()}";
-                var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName);
-
-                var newLocation = new Location()
-                {
-                    Name = location.Name,
-                    Province = location.Province,
-                    Country = location.Country,
-                    Image = imageUrl,
-                    CreatedBy = user.Email ?? "Unknown",
-                    CreatedDate = DateTime.Now
-                };
-
-                _context.Location.Add(newLocation);
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-
-        private async Task SeedingRoomAsync(ApplicationUser user, CancellationToken cancellationToken)
-        {
-            string roomJson = System.IO.File.ReadAllText("./Data/Json/room.json");
-            List<RoomModel>? roomList = System.Text.Json.JsonSerializer.Deserialize<List<RoomModel>>(roomJson);
-            var locationList = await _context.Location.ToListAsync(cancellationToken);
-
-            if (roomList == null)
-            {
-                throw new ValidationException("Fail to seeding room data");
-            }
-
-            foreach (var room in roomList)
-            {
-
-                var location = locationList.FirstOrDefault(l => l.Name == room.LocationName);
-
-                var newRoom = ConvertRoomModelIntoRoomEntity(room, location, user);
-                _context.Room.Add(newRoom);
-                await _context.SaveChangesAsync(cancellationToken);
-
-                await SeedingRoomImageAsync(room.ImagePath, newRoom, cancellationToken);
-            }
-        }
-
-        private async Task SeedingRoomImageAsync(string folderPath, Room room, CancellationToken cancellationToken)
-        {
-            string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".gif" };  // Add more extensions if needed
-
-            // Get all files in the folder
-            string[] fileNames = Directory.GetFiles(folderPath);
-
-            foreach (string fileName in fileNames)
-            {
-                string extension = Path.GetExtension(fileName);
-
-                Console.WriteLine(extension);
-
-                // Check if the file has a supported image extension
-                if (imageExtensions.Contains(extension.ToLower()))
-                {
-                    FileStream imageStream = File.OpenRead(fileName);
-                    var imageName = $"{DateHelper.GetDateTimeNowString()}_{fileName}";
-
-                    // Original Image
-                    var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName);
-
-                    // Save Medium Size Image
-                    var processedMediumQualityImageStream = ProcessedImageFactory.TransformToMediumQualityImageFromStream(imageStream);
-                    var processedMediumQualityFileName = $"{DateHelper.GetDateTimeNowString()}_medium_quality_{fileName}";
-                    var mediumQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedMediumQualityImageStream, processedMediumQualityFileName);
-
-                    // Save Small Size Image
-                    var processedImageStream = ProcessedImageFactory.TransformToLowQualityImageFromStream(imageStream);
-                    var processedFileName = $"{DateHelper.GetDateTimeNowString()}_low_quality_{fileName}";
-                    var lowQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedImageStream, processedFileName);
-
-                    var newImage = new Image
-                    {
-                        Title = fileName,
-                        Description = "Image Description",
-                        LowQualityUrl = lowQualityUrl,
-                        MediumQualityUrl = mediumQualityUrl,
-                        HighQualityUrl = imageUrl,
-                        Room = room
-                    };
-
-                    _context.Image.Add(newImage);
-                }
-            }
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-        // Read the image file and convert it into a stream
-        public Stream ImageToStream(string imagePath)
-        {
-            FileStream imageStream = File.OpenRead(imagePath);
-            return imageStream;
-        }
-        private Room ConvertRoomModelIntoRoomEntity(RoomModel roomModel, Location? location, ApplicationUser user)
-        {
-            return new Room()
-            {
-                Id = Guid.NewGuid(),
-                Name = roomModel.Name,
-                HomeType = roomModel.HomeType,
-                RoomType = roomModel.RoomType,
-                TotalOccupancy = roomModel.TotalOccupancy,
-                TotalBedrooms = roomModel.TotalBedrooms,
-                TotalBathrooms = roomModel.TotalBathrooms,
-                Summary = roomModel.Summary,
-                Address = roomModel.Address,
-                HasTV = roomModel.HasTV,
-                HasKitchen = roomModel.HasKitchen,
-                HasAirCon = roomModel.HasAirCon,
-                HasHeating = roomModel.HasHeating,
-                HasInternet = roomModel.HasInternet,
-                Price = roomModel.Price,
-                Latitude = roomModel.Latitude,
-                Longitude = roomModel.Longitude,
-                Location = location,
-                Owner = user,
-                CreatedBy = user.Email ?? "Unknown",
-                CreatedDate = DateTime.Now
+               Name = location.Name,
+               Province = location.Province,
+               Country = location.Country,
+               Image = imageUrl,
+               CreatedBy = user.Email ?? "Unknown",
+               CreatedDate = DateTime.Now
             };
-        }
-    }
+
+            _context.Location.Add(newLocation);
+         }
+
+         await _context.SaveChangesAsync(cancellationToken);
+      }
+
+      private async Task SeedingRoomAsync(ApplicationUser user, CancellationToken cancellationToken)
+      {
+         string roomJson = System.IO.File.ReadAllText("./Data/Json/room.json");
+         List<RoomModel>? roomList = System.Text.Json.JsonSerializer.Deserialize<List<RoomModel>>(roomJson);
+         var locationList = await _context.Location.ToListAsync(cancellationToken);
+
+         if (roomList == null)
+         {
+            throw new ValidationException("Fail to seeding room data");
+         }
+
+         foreach (var room in roomList)
+         {
+
+            var location = locationList.FirstOrDefault(l => l.Name == room.LocationName);
+
+            var newRoom = ConvertRoomModelIntoRoomEntity(room, location, user);
+            _context.Room.Add(newRoom);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            await SeedingRoomImageAsync(room.ImagePath, newRoom, cancellationToken);
+         }
+      }
+
+      private async Task SeedingRoomImageAsync(string folderPath, Room room, CancellationToken cancellationToken)
+      {
+         string[] imageExtensions = { ".jpg", ".jpeg", ".png", ".gif" };  // Add more extensions if needed
+
+         // Get all files in the folder
+         string[] fileNames = Directory.GetFiles(folderPath);
+
+         foreach (string fileName in fileNames)
+         {
+            string extension = Path.GetExtension(fileName);
+
+            // Check if the file has a supported image extension
+            if (imageExtensions.Contains(extension.ToLower()))
+            {
+               Stream imageStream1 = ImageToStream(fileName);
+               Stream imageStream2 = ImageToStream(fileName);
+               Stream imageStream3 = ImageToStream(fileName);
+
+               var convertFileName = fileName.Split("/").Last();
+               var imageName = $"{DateHelper.GetDateTimeNowString()}_{convertFileName}";
+
+               // Original Image
+               var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream1, imageName);
+
+               // Save Medium Size Image
+               var processedMediumQualityImageStream = ProcessedImageFactory.TransformToMediumQualityImageFromStream(imageStream2);
+               var processedMediumQualityFileName = $"{DateHelper.GetDateTimeNowString()}_medium_quality_{convertFileName}";
+               var mediumQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedMediumQualityImageStream, processedMediumQualityFileName);
+
+               // Save Small Size Image
+               var processedSmallQualityImageStream = ProcessedImageFactory.TransformToLowQualityImageFromStream(imageStream3);
+               var processedFileName = $"{DateHelper.GetDateTimeNowString()}_low_quality_{convertFileName}";
+               var lowQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedSmallQualityImageStream, processedFileName);
+
+               var newImage = new Image
+               {
+                  Title = fileName,
+                  Description = "Image Description",
+                  LowQualityUrl = lowQualityUrl,
+                  MediumQualityUrl = mediumQualityUrl,
+                  HighQualityUrl = "imageUrl",
+                  Room = room
+               };
+
+               _context.Image.Add(newImage);
+            }
+         }
+         await _context.SaveChangesAsync(cancellationToken);
+      }
+      // Read the image file and convert it into a stream
+      public Stream ImageToStream(string imagePath)
+      {
+         Stream stream = new FileStream(imagePath, FileMode.Open);
+         return stream;
+      }
+      private Room ConvertRoomModelIntoRoomEntity(RoomModel roomModel, Location? location, ApplicationUser user)
+      {
+         return new Room()
+         {
+            Id = Guid.NewGuid(),
+            Name = roomModel.Name,
+            HomeType = roomModel.HomeType,
+            RoomType = roomModel.RoomType,
+            TotalOccupancy = roomModel.TotalOccupancy,
+            TotalBedrooms = roomModel.TotalBedrooms,
+            TotalBathrooms = roomModel.TotalBathrooms,
+            Summary = roomModel.Summary,
+            Address = roomModel.Address,
+            HasTV = roomModel.HasTV,
+            HasKitchen = roomModel.HasKitchen,
+            HasAirCon = roomModel.HasAirCon,
+            HasHeating = roomModel.HasHeating,
+            HasInternet = roomModel.HasInternet,
+            Price = roomModel.Price,
+            Latitude = roomModel.Latitude,
+            Longitude = roomModel.Longitude,
+            Location = location,
+            Owner = user,
+            CreatedBy = user.Email ?? "Unknown",
+            CreatedDate = DateTime.Now
+         };
+      }
+   }
 }

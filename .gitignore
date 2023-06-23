@@ -484,3 +484,4 @@ obj/
 *.txt
 *appsettings*
 /Data
+.DS_Store
