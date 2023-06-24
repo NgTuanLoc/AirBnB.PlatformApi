@@ -27,6 +27,17 @@ namespace PlatformApi.Extensions
          services.AddEndpointsApiExplorer();
          services.AddSwaggerGen();
 
+         // Cors
+         services.AddCors(options =>
+         {
+            options.AddPolicy("AllowSpecificOrigin",
+               builder => builder
+               .WithOrigins("http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3001")
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials());
+         });
+
          // BlobStorage
          services.AddScoped(_ =>
          {

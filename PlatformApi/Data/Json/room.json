@@ -14,8 +14,8 @@
 		"HasHeating": false,
 		"HasInternet": false,
 		"Price": 123,
-		"latitude": 123,
-		"longitude": 123,
+		"Latitude": 123,
+		"Longitude": 123,
 		"ImagePath": "./Data/Images/Room/1/",
 		"LocationName": "Location 1"
 	}
