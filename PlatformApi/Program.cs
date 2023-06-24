@@ -10,6 +10,7 @@ var app = builder.Build();
 
 //adds all the controller classes as services
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseSwagger();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
