@@ -89,7 +89,12 @@ namespace Infrastructure.Repositories
 
       public async Task<List<Room>> GetAllRoomListAsync(CancellationToken cancellationToken)
       {
-         var roomList = await _context.Room.ToListAsync(cancellationToken);
+         var roomList = await _context.Room
+         .Include(item => item.Location)
+         .Include(item => item.ImageList)
+         .Include(item => item.Owner)
+         .ToListAsync(cancellationToken);
+
          return roomList;
       }
 

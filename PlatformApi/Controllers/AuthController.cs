@@ -28,10 +28,10 @@ namespace PlatformApi.Controllers
 
       [AllowAnonymous]
       [HttpPost("login")]
-      public async Task<ApplicationUser> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
+      public async Task<IActionResult> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
       {
          var result = await _authService.LoginService(request, cancellationToken);
-         return result;
+         return Ok(result);
       }
 
       [AllowAnonymous]
@@ -55,7 +55,7 @@ namespace PlatformApi.Controllers
       public async Task<IActionResult> Seed(CancellationToken cancellationToken)
       {
          var result = await _databaseService.SeedingService(cancellationToken);
-         
+
          return Ok(result);
       }
    }
