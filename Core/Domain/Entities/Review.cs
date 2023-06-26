@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Core.Domain.IdentityEntities;
 
 namespace Core.Domain.Entities
 {
    public class Review : BaseModel
    {
-      public Reservation? Reservation { get; set; }
+      public Reservation Reservation { get; set; } = default!;
+      public ApplicationUser User { get; set; } = default!;
       public int Rating { get; set; }
       public string Comment { get; set; } = "No Comment";
       public string Title { get; set; } = "No Title";

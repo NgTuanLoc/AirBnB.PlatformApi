@@ -46,7 +46,9 @@ namespace Infrastructure.Repositories
             StartDate = dateRange.StartDate,
             EndDate = dateRange.EndDate,
             Price = totalPrice,
-            Total = request.ToTalGuests
+            Total = request.ToTalGuests,
+            CreatedBy = guest.Email ?? "Unknown User",
+            CreatedDate = DateTime.Now
          };
 
          _context.Reservation.Add(newReservation);
@@ -141,6 +143,8 @@ namespace Infrastructure.Repositories
             EndDate = existedReservation.EndDate,
          };
          existedReservation.Price = CalculatePrice(existedReservation.Price, dateRange, existedReservation.Total);
+         existedReservation.ModifiedBy = existedReservation?.User?.Email ?? "Unknown User";
+         existedReservation.ModifiedDate = DateTime.Now;
 
          await _context.SaveChangesAsync(cancellationToken);
 

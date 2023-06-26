@@ -55,6 +55,7 @@ namespace PlatformApi.Extensions
          services.AddScoped<ILocationRepository, LocationRepository>();
          services.AddScoped<IRoomRepository, RoomRepository>();
          services.AddScoped<IReservationRepository, ReservationRepository>();
+         services.AddScoped<IReviewRepository, ReviewRepository>();
 
          // Services Layer
          services.AddScoped<IDatabaseService, DatabaseService>();
@@ -64,6 +65,7 @@ namespace PlatformApi.Extensions
          services.AddScoped<IUserService, UserService>();
          services.AddScoped<IRoomService, RoomService>();
          services.AddScoped<IReservationService, ReservationService>();
+         services.AddScoped<IReviewService, ReviewService>();
 
          // Add DbContext Services
          services.AddDbContext<ApplicationDbContext>(
