@@ -30,13 +30,13 @@
 							"formdata": []
 						},
 						"url": {
-							"raw": "{{URL}}/room/789e7915-f39c-4445-8fa5-22708048e2aa",
+							"raw": "{{URL}}/room/84ce7159-0ffd-4728-bd0f-10e8b94d7066",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"room",
-								"789e7915-f39c-4445-8fa5-22708048e2aa"
+								"84ce7159-0ffd-4728-bd0f-10e8b94d7066"
 							]
 						}
 					},
@@ -608,7 +608,102 @@
 		},
 		{
 			"name": "Reservation",
-			"item": []
+			"item": [
+				{
+					"name": "Get Reservation List By Room Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/reservation?roomId=339fd991-e7e5-4e03-b9fd-3fff193260ce",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"reservation"
+							],
+							"query": [
+								{
+									"key": "roomId",
+									"value": "339fd991-e7e5-4e03-b9fd-3fff193260ce"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Reservation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"UserId\" : \"00ab8879-9bda-4d93-dd2d-08db695a4eaa\",\n    \"RoomId\" : \"339fd991-e7e5-4e03-b9fd-3fff193260ce\",\n    \"StartDate\" : \"04/12/2023\",\n    \"EndDate\" : \"05/12/2023\",\n    \"ToTalGuests\" : 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/reservation",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"reservation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Reservation By Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"StartDate\" : \"04/12/2023\",\n    \"EndDate\" : \"05/12/2023\",\n    \"ToTalGuests\" : 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/reservation/b284abc6-3201-4bb1-970f-8fa32145cf54",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"reservation",
+								"b284abc6-3201-4bb1-970f-8fa32145cf54"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Reservation By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/reservation/1cbc1692-4911-43ba-934c-7d924342c247",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"reservation",
+								"1cbc1692-4911-43ba-934c-7d924342c247"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Location",
@@ -750,11 +845,163 @@
 		},
 		{
 			"name": "Review",
-			"item": []
+			"item": [
+				{
+					"name": "Get All Reviews By RoomId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Title\" : \"Review Title\",\n    \"Comment\" : \"Review Comment\",\n    \"Rating\" : 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review?roomId=00ab8879-9bda-4d93-dd2d-08db695a4eaa",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review"
+							],
+							"query": [
+								{
+									"key": "roomId",
+									"value": "00ab8879-9bda-4d93-dd2d-08db695a4eaa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Review By RoomId",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Title\" : \"Review Title\",\n    \"Comment\" : \"Review Comment\",\n    \"Rating\" : 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review?roomId=00ab8879-9bda-4d93-dd2d-08db695a4eaa",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review"
+							],
+							"query": [
+								{
+									"key": "roomId",
+									"value": "00ab8879-9bda-4d93-dd2d-08db695a4eaa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review By Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Title\" : \"Review Title\",\n    \"Comment\" : \"Review Comment\",\n    \"Rating\" : 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review/00ab8879-9bda-4d93-dd2d-08db695a4eaa",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review",
+								"00ab8879-9bda-4d93-dd2d-08db695a4eaa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Title\" : \"Review Title\",\n    \"Comment\" : \"Review Comment\",\n    \"Rating\" : 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review/00ab8879-9bda-4d93-dd2d-08db695a4eaa",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review",
+								"00ab8879-9bda-4d93-dd2d-08db695a4eaa"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "User",
 			"item": [
+				{
+					"name": "Get User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/user/get-user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user",
+								"get-user"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Change Password",
 					"request": {
@@ -858,36 +1105,6 @@
 							"path": [
 								"user",
 								"update-user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get User",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{URL}}/user/get-user",
-							"host": [
-								"{{URL}}"
-							],
-							"path": [
-								"user",
-								"get-user"
 							]
 						}
 					},
