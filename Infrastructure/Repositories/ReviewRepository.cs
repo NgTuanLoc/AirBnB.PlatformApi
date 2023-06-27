@@ -35,8 +35,10 @@ namespace Infrastructure.Repositories
 
          if (existedReservation == null) throw new ValidationException($"This user does not have a reservation for this room");
 
+         var newReviewId = Guid.NewGuid();
          var newReview = new Review()
          {
+            Id = newReviewId,
             Title = request.Title,
             Comment = request.Comment,
             Rating = request.Rating,
@@ -66,6 +68,7 @@ namespace Infrastructure.Repositories
             where room.Id == roomId
             select new CreateReviewResponse()
             {
+               Id = review.Id,
                Title = review.Title,
                Comment = review.Comment,
                Rating = review.Rating,
@@ -80,16 +83,14 @@ namespace Infrastructure.Repositories
       public async Task<CreateReviewResponse> UpdateReviewByIdAsync(UpdateReviewRequest request, Guid id, CancellationToken cancellationToken)
       {
          var existedReview = await _context.Review
-         .Include(r => r.Reservation)
-         .Include(r => r.User)
-         .Include(r => r.Reservation.Room)
+         .Include("Reservation.Room")
          .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
          if (existedReview == null) throw new NotFoundException($"review with id {id} is not found");
 
          var user = await _userService.GetUserService();
 
-         if (existedReview.User == null || existedReview?.User.Id != user.Id) throw new NotFoundException($"UPdate review failed ! Only the author can update the review");
+         if (existedReview.User == null || existedReview?.User.Id != user.Id) throw new NotFoundException($"Update review failed ! Only the author can update the review");
 
          if (request.Title != null) existedReview.Title = request.Title;
          if (request.Comment != null) existedReview.Comment = request.Comment;
@@ -102,18 +103,19 @@ namespace Infrastructure.Repositories
 
          return new CreateReviewResponse()
          {
+            Id = existedReview.Id,
             Title = existedReview.Title,
             Comment = existedReview.Comment,
             Rating = existedReview.Rating,
-            RoomName = existedReview.Reservation.Room.Name,
-            UserEmail = existedReview.User.Email ?? "Unknown User"
+            RoomName = existedReview?.Reservation?.Room?.Name ?? "Unknown room name",
+            UserEmail = user.Email ?? "Unknown User"
          };
       }
 
       public async Task<CreateReviewResponse> DeleteReviewByIdAsync(Guid id, CancellationToken cancellationToken)
       {
          var existedReview = await _context.Review
-         .Include(r => r.Reservation)
+         .Include("Reservation.Room")
          .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
 
          if (existedReview == null) throw new NotFoundException($"review with id {id} is not found");
@@ -122,6 +124,9 @@ namespace Infrastructure.Repositories
 
          if (existedReview.User == null || existedReview?.User.Id != user.Id) throw new NotFoundException($"Delete review failed ! Only the author can update the review");
 
+         _context.Review.Remove(existedReview);
+         await _context.SaveChangesAsync(cancellationToken);
+
          return ConvertReviewEntityToCreateReviewResponse(existedReview, existedReview?.Reservation?.Room?.Name ?? "Unknown");
       }
 
@@ -129,6 +134,7 @@ namespace Infrastructure.Repositories
       {
          return new CreateReviewResponse()
          {
+            Id = review.Id,
             Title = review.Title,
             Comment = review.Comment,
             Rating = review.Rating,
