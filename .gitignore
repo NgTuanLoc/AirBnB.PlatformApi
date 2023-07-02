@@ -476,7 +476,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Customer properties
+# Custom properties
 .env
 .vscode
 bin/
@@ -485,3 +485,4 @@ obj/
 *appsettings*
 /PlatformApi/Data
 .DS_Store
+out
