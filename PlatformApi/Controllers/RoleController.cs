@@ -1,3 +1,4 @@
+using Core.Models.Role;
 using Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,29 +15,34 @@ namespace PlatformApi.Controllers
             _roleService = roleService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllRoleList(CancellationToken cancellationToken)
+        public IActionResult GetAllRoleList()
         {
-            return Ok("GetAllRoleList");
+            var result = _roleService.GetAllRoleListService();
+            return Ok(result);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRoleById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            return Ok("GetRoleById");
+            var result = await _roleService.GetRoleByIdService(id, cancellationToken);
+            return Ok(result);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateRole(CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request, CancellationToken cancellationToken)
         {
-            return Ok("CreateRole");
+            var result = await _roleService.CreateRoleService(request, cancellationToken);
+            return Ok(result);
         }
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateRoleById([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateRoleById([FromRoute] Guid id, [FromBody] CreateRoleRequest request, CancellationToken cancellationToken)
         {
-            return Ok("UpdateRoleById");
+            var result = await _roleService.UpdateRoleByIdService(id, request, cancellationToken);
+            return Ok(result);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoleById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            return Ok("DeleteRoleById");
+            var result = await _roleService.DeleteRoleByIdService(id, cancellationToken);
+            return Ok(result);
         }
     }
 }
