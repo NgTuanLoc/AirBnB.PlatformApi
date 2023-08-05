@@ -1,5 +1,7 @@
+using Core.Constants;
 using Core.Models.Role;
 using Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
@@ -14,6 +16,7 @@ namespace PlatformApi.Controllers
             _logger = logger;
             _roleService = roleService;
         }
+        [Authorize(Roles = UserRoleOptions.USER)]
         [HttpGet]
         public IActionResult GetAllRoleList()
         {

@@ -1,7 +1,9 @@
 namespace Core.Constants
 {
-    public enum UserRoleOptions
+    public class UserRoleOptions
     {
-        Admin, Owner, User
+        public const string ADMIN = "Admin";
+        public const string OWNER = "Owner";
+        public const string USER = "User";
     }
 }

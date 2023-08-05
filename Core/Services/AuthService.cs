@@ -43,10 +43,12 @@ namespace Core.Services
       {
          var user = await _userManager.FindByNameAsync(request.Email);
 
+
          if (user == null)
          {
             throw new ValidationException("User not found !");
          }
+         await _userManager.AddToRoleAsync(user, "Admin");
 
          var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: true, lockoutOnFailure: true);
 

@@ -23,8 +23,10 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowSpecificOrigin");
 
-app.UseAuthorization();
+app.UseAuthentication(); //Reading Identity cookie
 
-app.MapControllers();
+app.UseAuthorization(); //Validates access permissions of the user
+
+app.MapControllers(); //Execute the filter pipeline (action + filters)
 
 app.Run();

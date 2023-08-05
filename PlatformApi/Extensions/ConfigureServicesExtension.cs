@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PlatformApi.Filters;
+using PlatformApi.Middlewares;
 using PlatformApi.Policy;
 
 namespace PlatformApi.Extensions
@@ -47,6 +48,7 @@ namespace PlatformApi.Extensions
 
          // Add Middleware
          services.AddSingleton<IAuthorizationMiddlewareResultHandler, UnauthorizedHandler>();
+         services.AddTransient<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 
          // Repositories Layer
          services.AddScoped<IDatabaseRepository, DatabaseRepository>();
