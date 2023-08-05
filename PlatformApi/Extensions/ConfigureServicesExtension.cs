@@ -66,6 +66,7 @@ namespace PlatformApi.Extensions
          services.AddScoped<IRoomService, RoomService>();
          services.AddScoped<IReservationService, ReservationService>();
          services.AddScoped<IReviewService, ReviewService>();
+         services.AddScoped<IRoleService, RoleService>();
 
          // Add DbContext Services
          services.AddDbContext<ApplicationDbContext>(
