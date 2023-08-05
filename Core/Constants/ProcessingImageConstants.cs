@@ -12,8 +12,8 @@ namespace Core.Constants
    {
       // ! Boundary: 0 <= GAUSSIAN_BLUR_SIGMA <= 5
       public const float GAUSSIAN_BLUR_SIGMA = (float)1.5;
-      public const int RESIZE_WIDTH = 1000;
-      public const int RESIZE_HEIGHT = 1000;
-      public const int IMAGE_QUALITY = 80;
+      public const int RESIZE_WIDTH = 400;
+      public const int RESIZE_HEIGHT = 4000;
+      public const int IMAGE_QUALITY = 70;
    }
 }

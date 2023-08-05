@@ -161,7 +161,7 @@ namespace Infrastructure.Repositories
                   Description = "Image Description",
                   LowQualityUrl = lowQualityUrl,
                   MediumQualityUrl = mediumQualityUrl,
-                  HighQualityUrl = "imageUrl",
+                  HighQualityUrl = imageUrl,
                   Room = room
                };
 
