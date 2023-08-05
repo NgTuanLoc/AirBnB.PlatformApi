@@ -864,7 +864,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/review?roomId=00ab8879-9bda-4d93-dd2d-08db695a4eaa",
+							"raw": "{{URL}}/review?roomId=339fd991-e7e5-4e03-b9fd-3fff193260ce",
 							"host": [
 								"{{URL}}"
 							],
@@ -874,7 +874,7 @@
 							"query": [
 								{
 									"key": "roomId",
-									"value": "00ab8879-9bda-4d93-dd2d-08db695a4eaa"
+									"value": "339fd991-e7e5-4e03-b9fd-3fff193260ce"
 								}
 							]
 						}
@@ -896,7 +896,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/review?roomId=00ab8879-9bda-4d93-dd2d-08db695a4eaa",
+							"raw": "{{URL}}/review?roomId=339fd991-e7e5-4e03-b9fd-3fff193260ce",
 							"host": [
 								"{{URL}}"
 							],
@@ -906,7 +906,7 @@
 							"query": [
 								{
 									"key": "roomId",
-									"value": "00ab8879-9bda-4d93-dd2d-08db695a4eaa"
+									"value": "339fd991-e7e5-4e03-b9fd-3fff193260ce"
 								}
 							]
 						}
@@ -920,7 +920,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"Title\" : \"Review Title\",\n    \"Comment\" : \"Review Comment\",\n    \"Rating\" : 3\n}",
+							"raw": "{\n    \"Title\" : \"Review Title\",\n    \"Comment\" : \"Review Comment\",\n    \"Rating\" : 5\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -928,13 +928,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/review/00ab8879-9bda-4d93-dd2d-08db695a4eaa",
+							"raw": "{{URL}}/review/5ff8ca3d-df72-4b9c-9129-6b5af601f5bd",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"review",
-								"00ab8879-9bda-4d93-dd2d-08db695a4eaa"
+								"5ff8ca3d-df72-4b9c-9129-6b5af601f5bd"
 							]
 						}
 					},
@@ -1105,6 +1105,117 @@
 							"path": [
 								"user",
 								"update-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "Get Role List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/role",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Role By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/role/2bee370a-0b34-4f41-4bfb-08db9581e1d7",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"role",
+								"2bee370a-0b34-4f41-4bfb-08db9581e1d7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"RoleName\" : \"User\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/role",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role By Id",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"RoleName\" : \"Admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/role/2bee370a-0b34-4f41-4bfb-08db9581e1d7",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"role",
+								"2bee370a-0b34-4f41-4bfb-08db9581e1d7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Role By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/role/2bee370a-0b34-4f41-4bfb-08db9581e1d7",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"role",
+								"2bee370a-0b34-4f41-4bfb-08db9581e1d7"
 							]
 						}
 					},
