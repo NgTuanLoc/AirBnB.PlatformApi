@@ -20,6 +20,12 @@ namespace PlatformApi.Extensions
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2); // Set lockout duration to 30 minutes
                 options.Lockout.MaxFailedAccessAttempts = 5; // Set maximum number of failed login attempts before lockout
             });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.SlidingExpiration = true;
+            });
             return services;
         }
     }
