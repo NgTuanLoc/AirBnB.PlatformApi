@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using PlatformApi.Filters;
 using PlatformApi.Middlewares;
 using PlatformApi.Policy;
@@ -23,10 +24,37 @@ namespace PlatformApi.Extensions
          {
             options.Filters.Add(typeof(ModelStateFilter));
             options.Filters.Add(typeof(CustomExceptionFilter));
+            options.Filters.Add(typeof(AuthorizationFilter));
          }).AddNewtonsoftJson();
          services.AddHttpContextAccessor();
          services.AddEndpointsApiExplorer();
-         services.AddSwaggerGen();
+         services.AddSwaggerGen(option =>
+         {
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+               In = ParameterLocation.Header,
+               Description = "Please enter a valid token",
+               Name = "Authorization",
+               Type = SecuritySchemeType.Http,
+               BearerFormat = "JWT",
+               Scheme = "Bearer"
+            });
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+         });
 
          // Cors
          services.AddCors(options =>
