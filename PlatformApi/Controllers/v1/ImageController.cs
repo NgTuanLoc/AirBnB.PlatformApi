@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
-   [Route("api/v1/[controller]")]
+   [ApiVersion("1.0")]
    [Authorize]
-   public class ImageController : Controller
+   public class ImageController : BaseController
    {
       private readonly ILogger<ImageController> _logger;
       private readonly IImageService _imageService;

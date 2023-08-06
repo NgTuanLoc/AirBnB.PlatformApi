@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
+    [ApiVersion("1.0")]
     [Authorize(Roles = UserRoleOptions.ADMIN)]
-    [Route("api/v1/[controller]")]
-    public class RoleController : Controller
+    public class RoleController : BaseController
     {
         private readonly ILogger<RoleController> _logger;
         private readonly IRoleService _roleService;

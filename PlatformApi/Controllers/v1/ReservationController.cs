@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
-   [Route("api/v1/[controller]")]
+   [ApiVersion("1.0")]
    [Authorize]
-   public class ReservationController : Controller
+   public class ReservationController : BaseController
    {
       private readonly ILogger<ReservationController> _logger;
       private readonly IReservationService _reservationService;

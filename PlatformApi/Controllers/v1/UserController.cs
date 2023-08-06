@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
-   [Route("api/v1/[controller]")]
+   [ApiVersion("1.0")]
    [Authorize]
-   public class UserController : Controller
+   public class UserController : BaseController
    {
       private readonly ILogger<UserController> _logger;
       private readonly IUserService _userService;

@@ -4,7 +4,10 @@ using PlatformApi.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.ConfigureServices(builder.Configuration);
+builder.Services.ConfigureServices(builder.Configuration, builder.Environment);
+builder.Services.ConfigureExternalServices(builder.Configuration);
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureSwagger();
 
 var app = builder.Build();
 
@@ -18,7 +21,11 @@ app.UseHttpsRedirection();
 
 app.UseSwagger();
 
-app.UseSwaggerUI();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Platform API 1.0");
+    options.SwaggerEndpoint("/swagger/v2/swagger.json", "Platform API 2.0");
+});
 
 app.UseCors("AllowSpecificOrigin");
 

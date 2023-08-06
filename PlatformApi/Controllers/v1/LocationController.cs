@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
-   [Route("api/v1/[controller]")]
+   [ApiVersion("1.0")]
    [Authorize]
-   public class LocationController : Controller
+   public class LocationController : BaseController
    {
       private readonly ILogger<LocationController> _logger;
       private readonly ILocationService _locationService;

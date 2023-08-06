@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
-   [Route("api/v1/[controller]")]
+   [ApiVersion("1.0")]
    [Authorize]
-   public class RoomController : Controller
+   public class RoomController : BaseController
    {
       private readonly ILogger<RoomController> _logger;
       private readonly IRoomService _roomService;
