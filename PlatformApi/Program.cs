@@ -10,16 +10,15 @@ var app = builder.Build();
 
 //adds all the controller classes as services
 app.UseMiddleware<ErrorHandlingMiddleware>();
-app.UseSwagger();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-   app.UseSwagger();
-   app.UseSwaggerUI();
-}
+app.UseHsts();
 
 app.UseHttpsRedirection();
+
+app.UseSwagger();
+
+app.UseSwaggerUI();
 
 app.UseCors("AllowSpecificOrigin");
 

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
+    [Authorize(Roles = UserRoleOptions.ADMIN)]
     [Route("api/v1/[controller]")]
     public class RoleController : Controller
     {
@@ -16,7 +17,6 @@ namespace PlatformApi.Controllers
             _logger = logger;
             _roleService = roleService;
         }
-        [Authorize(Roles = UserRoleOptions.USER)]
         [HttpGet]
         public IActionResult GetAllRoleList()
         {
