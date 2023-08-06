@@ -10,6 +10,7 @@ namespace Core.Services
         List<CreateRoleResponse> GetAllRoleListService();
         Task<CreateRoleResponse> GetRoleByIdService(Guid id, CancellationToken cancellationToken);
         Task<CreateRoleResponse> CreateRoleService(CreateRoleRequest request, CancellationToken cancellationToken);
+        Task<List<CreateRoleResponse>> CreateRoleListService(List<CreateRoleRequest> request, CancellationToken cancellationToken);
         Task<CreateRoleResponse> UpdateRoleByIdService(Guid id, CreateRoleRequest request, CancellationToken cancellationToken);
         Task<CreateRoleResponse> DeleteRoleByIdService(Guid id, CancellationToken cancellationToken);
 
@@ -80,6 +81,18 @@ namespace Core.Services
             await _roleManager.UpdateAsync(existedRole);
 
             return ConvertApplicationRoleIntoCreateRoleResponse(existedRole);
+        }
+
+        public async Task<List<CreateRoleResponse>> CreateRoleListService(List<CreateRoleRequest> request, CancellationToken cancellationToken)
+        {
+            List<CreateRoleResponse> response = new List<CreateRoleResponse>();
+
+            foreach (var role in request)
+            {
+                var result = await CreateRoleService(role, cancellationToken);
+                response.Add(result);
+            }
+            return response;
         }
 
         private static CreateRoleResponse ConvertApplicationRoleIntoCreateRoleResponse(ApplicationRole role)

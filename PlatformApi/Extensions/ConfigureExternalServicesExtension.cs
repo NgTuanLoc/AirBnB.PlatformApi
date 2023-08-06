@@ -8,7 +8,7 @@ namespace PlatformApi.Extensions
 {
     public static class ConfigureExternalServicesExtension
     {
-        public static IServiceCollection ConfigureExternalServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureExternalServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             // Add Base Services
             services.AddControllers(options =>
@@ -34,6 +34,10 @@ namespace PlatformApi.Extensions
             services.AddScoped(_ =>
             {
                 var connection = configuration.GetConnectionString("BlobStorageConnection");
+                if (env.IsDevelopment())
+                {
+                    connection = configuration.GetConnectionString("LocalBlobStorageConnection");
+                }
                 return new BlobServiceClient(connection);
             });
 

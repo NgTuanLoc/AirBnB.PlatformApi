@@ -11,10 +11,10 @@ namespace PlatformApi.Filters
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (ShouldSkipAuthorization(context))
-            {
-                return; // Skip authorization
-            }
+            // if (ShouldSkipAuthorization(context))
+            // {
+            //     return; // Skip authorization
+            // }
 
             if (!context.HttpContext.Request.Headers.TryGetValue(HeaderKey, out var requestValue))
             {

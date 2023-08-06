@@ -2,6 +2,8 @@ using Core.Exceptions;
 using Core.Models.Auth;
 using Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
+using Core.Constants;
+using Core.Models.Role;
 
 namespace Core.Services
 {
@@ -15,14 +17,43 @@ namespace Core.Services
    {
       private readonly UserManager<ApplicationUser> _userManager;
       private readonly SignInManager<ApplicationUser> _signInManager;
-      public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManger)
+      private readonly IRoleService _roleService;
+      public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManger, IRoleService roleService)
       {
          _userManager = userManager;
          _signInManager = signInManger;
+         _roleService = roleService;
       }
       public async Task<string> RegisterService(RegisterRequest request, CancellationToken cancellationToken)
       {
          ApplicationUser user = new ApplicationUser() { Email = request.Email, PhoneNumber = request.Phone, UserName = request.Email, PersonName = request.PersonName };
+
+         var numberOfUsers = _userManager.Users.Count();
+         var isAdminUser = false;
+
+         if (numberOfUsers == 0)
+         {
+            // Prepare Role List
+            var roleList = new List<CreateRoleRequest>()
+            {
+               new CreateRoleRequest()
+               {
+                  RoleName = UserRoleOptions.ADMIN
+               },
+               new CreateRoleRequest()
+               {
+                  RoleName = UserRoleOptions.USER
+               },
+               new CreateRoleRequest()
+               {
+                  RoleName = UserRoleOptions.OWNER
+               },
+
+            };
+            // Create Role List
+            await _roleService.CreateRoleListService(roleList, cancellationToken);
+            isAdminUser = true;
+         }
 
          IdentityResult result = await _userManager.CreateAsync(user, request.Password);
 
@@ -36,6 +67,8 @@ namespace Core.Services
             throw new ValidationException(failures);
          }
 
+         // Assign Role and Auto Sign-In
+         await _userManager.AddToRoleAsync(user, isAdminUser ? UserRoleOptions.ADMIN : UserRoleOptions.USER);
          await _signInManager.SignInAsync(user, isPersistent: true);
          return "register succeed";
       }
@@ -48,7 +81,6 @@ namespace Core.Services
          {
             throw new ValidationException("User not found !");
          }
-         await _userManager.AddToRoleAsync(user, "Admin");
 
          var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: true, lockoutOnFailure: true);
 

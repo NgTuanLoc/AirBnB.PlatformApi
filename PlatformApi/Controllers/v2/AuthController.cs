@@ -1,12 +1,11 @@
-using Core.Constants;
 using Core.Models.Auth;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PlatformApi.Controllers
+namespace PlatformApi.Controllers.v2
 {
-   [ApiVersion("1.0")]
+   [ApiVersion("2.0")]
    public class AuthController : BaseController
    {
       private readonly ILogger<AuthController> _logger;
@@ -42,7 +41,7 @@ namespace PlatformApi.Controllers
          return Ok(result);
       }
 
-      [Authorize(Roles = UserRoleOptions.ADMIN)]
+      [Authorize]
       [HttpPost("restore")]
       public async Task<IActionResult> Restore(CancellationToken cancellationToken)
       {
@@ -50,7 +49,7 @@ namespace PlatformApi.Controllers
          return Ok(result);
       }
 
-      [Authorize(Roles = UserRoleOptions.ADMIN)]
+      [Authorize]
       [HttpPost("seed")]
       public async Task<IActionResult> Seed(CancellationToken cancellationToken)
       {
