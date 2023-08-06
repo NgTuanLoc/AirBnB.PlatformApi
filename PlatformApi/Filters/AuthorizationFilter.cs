@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace PlatformApi.Filters
@@ -9,6 +11,11 @@ namespace PlatformApi.Filters
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            if (ShouldSkipAuthorization(context))
+            {
+                return; // Skip authorization
+            }
+
             if (!context.HttpContext.Request.Headers.TryGetValue(HeaderKey, out var requestValue))
             {
                 context.Result = new UnauthorizedResult();
@@ -22,6 +29,16 @@ namespace PlatformApi.Filters
             {
                 context.Result = new UnauthorizedResult();
             }
+        }
+        private static bool ShouldSkipAuthorization(AuthorizationFilterContext context)
+        {
+            if (context.ActionDescriptor.EndpointMetadata.Any(em => em.GetType() == typeof(AllowAnonymousAttribute)))
+            {
+                // Check if the action is marked with [AllowAnonymous]
+                return true;
+            }
+
+            return false;
         }
     }
 }
