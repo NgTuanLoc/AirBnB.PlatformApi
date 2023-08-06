@@ -27,7 +27,7 @@ namespace Infrastructure.Repositories
          var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(ConfigConstants.BlobContainer);
          var blobStorageClient = blobStorageContainer.GetBlobClient(filename);
          streamContent.Position = 0;
-         var result = await blobStorageClient.UploadAsync(streamContent);
+         await blobStorageClient.UploadAsync(streamContent);
          return blobStorageClient.Uri.AbsoluteUri;
       }
       public async Task<string> DeleteImageFileFromBlobStorageAsync(string? imageUrl)

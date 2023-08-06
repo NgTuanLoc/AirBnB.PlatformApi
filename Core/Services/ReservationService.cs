@@ -1,6 +1,5 @@
 using Core.Domain.RepositoryInterface;
 using Core.Models.Reservation;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Core.Services
 {
