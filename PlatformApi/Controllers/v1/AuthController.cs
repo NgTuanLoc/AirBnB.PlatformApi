@@ -1,13 +1,12 @@
 using Core.Models.Auth;
-using Core.Domain.IdentityEntities;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PlatformApi.Controllers
 {
-   [Route("api/v1/[controller]")]
-   public class AuthController : Controller
+   [ApiVersion("1.0")]
+   public class AuthController : BaseController
    {
       private readonly ILogger<AuthController> _logger;
       private readonly IAuthService _authService;

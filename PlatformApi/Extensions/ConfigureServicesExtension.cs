@@ -7,6 +7,8 @@ using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using PlatformApi.Filters;
@@ -27,10 +29,28 @@ namespace PlatformApi.Extensions
             options.Filters.Add(typeof(AuthorizationFilter));
          }).AddNewtonsoftJson();
          services.AddHttpContextAccessor();
-         services.AddEndpointsApiExplorer();
+
+         services.AddApiVersioning(config =>
+         {
+            config.ApiVersionReader = new UrlSegmentApiVersionReader(); //Reads version number from request url at "apiVersion" constraint
+
+            //config.ApiVersionReader = new QueryStringApiVersionReader(); //Reads version number from request query string called "api-version". Eg: api-version=1.0
+
+            //config.ApiVersionReader = new HeaderApiVersionReader("api-version"); //Reads version number from request header called "api-version". Eg: api-version: 1.0
+
+            config.DefaultApiVersion = new ApiVersion(1, 0);
+            config.AssumeDefaultVersionWhenUnspecified = true;
+         });
+         services.AddVersionedApiExplorer(options =>
+         {
+            options.GroupNameFormat = "'v'VVV"; //v1
+            options.SubstituteApiVersionInUrl = true;
+         });
+         services.AddEndpointsApiExplorer(); //Generates description for all endpoints
          services.AddSwaggerGen(option =>
          {
-            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "AirBnB API", Version = "v1" });
+            option.SwaggerDoc("v2", new OpenApiInfo { Title = "AirBnB API", Version = "v2" });
             option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                In = ParameterLocation.Header,
