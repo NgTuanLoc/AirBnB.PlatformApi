@@ -1,6 +1,6 @@
 using AutoMapper;
 using Azure.Storage.Blobs;
-using Core.Utils.MapperProfiles;
+using Core.Utils;
 using Microsoft.AspNetCore.Authorization;
 using PlatformApi.Filters;
 using PlatformApi.Middlewares;
@@ -46,10 +46,10 @@ namespace PlatformApi.Extensions
             // AutoMapper
             var mapperConfig = new MapperConfiguration(config =>
             {
-                config.AddProfile(new AuthMappingProfile());
+                config.AddProfile(new MappingProfiles());
             });
             var mapperObject = mapperConfig.CreateMapper();
-            services.AddSingleton(mapperConfig);
+            services.AddSingleton(mapperObject);
 
             // Add Middleware
             services.AddSingleton<IAuthorizationMiddlewareResultHandler, UnauthorizedHandler>();

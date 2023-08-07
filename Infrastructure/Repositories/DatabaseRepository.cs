@@ -99,7 +99,7 @@ namespace Infrastructure.Repositories
 
       private async Task SeedingRoomAsync(ApplicationUser user, CancellationToken cancellationToken)
       {
-         string roomJson = System.IO.File.ReadAllText("./Data/Json/room.json");
+         string roomJson = File.ReadAllText("./Data/Json/room.json");
          List<RoomModel>? roomList = System.Text.Json.JsonSerializer.Deserialize<List<RoomModel>>(roomJson);
          var locationList = await _context.Location.ToListAsync(cancellationToken);
 

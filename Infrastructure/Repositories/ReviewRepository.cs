@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
          _context = context;
          _userService = userService;
       }
-      public async Task<CreateReviewResponse> CreateReviewByRoomIdAsync(CreateReviewRequest request, Guid roomId, CancellationToken cancellationToken)
+      public async Task<Review> CreateReviewByRoomIdAsync(CreateReviewRequest request, Guid roomId, CancellationToken cancellationToken)
       {
          var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken);
 
@@ -51,10 +51,10 @@ namespace Infrastructure.Repositories
          _context.Review.Add(newReview);
          await _context.SaveChangesAsync(cancellationToken);
 
-         return ConvertReviewEntityToCreateReviewResponse(newReview, existedRoom.Name);
+         return newReview;
       }
 
-      public async Task<List<CreateReviewResponse>> GetAllReviewsByRoomIdAsync(Guid roomId, CancellationToken cancellationToken)
+      public async Task<List<Review>> GetAllReviewsByRoomIdAsync(Guid roomId, CancellationToken cancellationToken)
       {
          var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken);
 
@@ -66,21 +66,13 @@ namespace Infrastructure.Repositories
             join user in _context.Users on review.User equals user
             join room in _context.Room on reservation.Room equals room
             where room.Id == roomId
-            select new CreateReviewResponse()
-            {
-               Id = review.Id,
-               Title = review.Title,
-               Comment = review.Comment,
-               Rating = review.Rating,
-               RoomName = room.Name,
-               UserEmail = user.Email ?? "Unknown"
-            }
+            select review
          ).ToListAsync(cancellationToken);
 
          return reviewList;
       }
 
-      public async Task<CreateReviewResponse> UpdateReviewByIdAsync(UpdateReviewRequest request, Guid id, CancellationToken cancellationToken)
+      public async Task<Review> UpdateReviewByIdAsync(UpdateReviewRequest request, Guid id, CancellationToken cancellationToken)
       {
          var existedReview = await _context.Review
          .Include("Reservation.Room")
@@ -101,18 +93,10 @@ namespace Infrastructure.Repositories
 
          await _context.SaveChangesAsync(cancellationToken);
 
-         return new CreateReviewResponse()
-         {
-            Id = existedReview.Id,
-            Title = existedReview.Title,
-            Comment = existedReview.Comment,
-            Rating = existedReview.Rating,
-            RoomName = existedReview?.Reservation?.Room?.Name ?? "Unknown room name",
-            UserEmail = user.Email ?? "Unknown User"
-         };
+         return existedReview;
       }
 
-      public async Task<CreateReviewResponse> DeleteReviewByIdAsync(Guid id, CancellationToken cancellationToken)
+      public async Task<Review> DeleteReviewByIdAsync(Guid id, CancellationToken cancellationToken)
       {
          var existedReview = await _context.Review
          .Include("Reservation.Room")
@@ -127,20 +111,7 @@ namespace Infrastructure.Repositories
          _context.Review.Remove(existedReview);
          await _context.SaveChangesAsync(cancellationToken);
 
-         return ConvertReviewEntityToCreateReviewResponse(existedReview, existedReview?.Reservation?.Room?.Name ?? "Unknown");
-      }
-
-      private CreateReviewResponse ConvertReviewEntityToCreateReviewResponse(Review review, string roomName)
-      {
-         return new CreateReviewResponse()
-         {
-            Id = review.Id,
-            Title = review.Title,
-            Comment = review.Comment,
-            Rating = review.Rating,
-            RoomName = roomName,
-            UserEmail = review?.User?.Email ?? "Unknown"
-         };
+         return existedReview;
       }
    }
 }

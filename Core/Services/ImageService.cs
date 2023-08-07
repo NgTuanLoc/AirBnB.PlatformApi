@@ -4,6 +4,7 @@ using Core.Models.Image;
 using Microsoft.AspNetCore.Http;
 using Core.Exceptions;
 using ImageEntity = Core.Domain.Entities.Image;
+using AutoMapper;
 
 namespace Core.Services
 {
@@ -18,9 +19,11 @@ namespace Core.Services
    public class ImageService : IImageService
    {
       private readonly IImageRepository _imageRepository;
-      public ImageService(IImageRepository imageRepository)
+      private readonly IMapper _mapper;
+      public ImageService(IImageRepository imageRepository, IMapper mapper)
       {
          _imageRepository = imageRepository;
+         _mapper = mapper;
       }
       public async Task<UploadImageResponse> UploadImageService(IFormFile? file)
       {
@@ -54,33 +57,39 @@ namespace Core.Services
       public async Task<CreateImageResponse> CreateImageService(UploadImageRequest request, CancellationToken cancellationToken)
       {
          var urlList = await UploadImageService(request.File);
-         var result = await _imageRepository.CreateImageAsync(request, urlList, cancellationToken);
-         return ConvertEntityIntoResponse.GetImageResponse(result);
+         var createdImage = await _imageRepository.CreateImageAsync(request, urlList, cancellationToken);
+         var response = _mapper.Map<ImageEntity, CreateImageResponse>(createdImage);
+
+         return response;
       }
 
       public async Task<CreateImageResponse> UpdateImageByIdService(Guid id, UpdateImageRequest request, CancellationToken cancellationToken)
       {
-         ImageEntity? result = null;
+         ImageEntity? updatedImage = null;
          if (request.File != null)
          {
             var urlList = await UploadImageService(request.File);
-            result = await _imageRepository.UpdateImageByIdAsync(id, request, urlList, cancellationToken);
-            return ConvertEntityIntoResponse.GetImageResponse(result);
+            updatedImage = await _imageRepository.UpdateImageByIdAsync(id, request, urlList, cancellationToken);
+            var imageResponse = _mapper.Map<ImageEntity, CreateImageResponse>(updatedImage);
+            return imageResponse;
          }
-         result = await _imageRepository.UpdateImageByIdAsync(id, request, null, cancellationToken);
-         return ConvertEntityIntoResponse.GetImageResponse(result);
+         updatedImage = await _imageRepository.UpdateImageByIdAsync(id, request, null, cancellationToken);
+         var response = _mapper.Map<ImageEntity, CreateImageResponse>(updatedImage);
+         return response;
       }
 
       public async Task<CreateImageResponse> DeleteImageByIdService(Guid id, CancellationToken cancellationToken)
       {
-         var result = await _imageRepository.DeleteImageByIdAsync(id, cancellationToken);
-         return ConvertEntityIntoResponse.GetImageResponse(result);
+         var deletedImage = await _imageRepository.DeleteImageByIdAsync(id, cancellationToken);
+         var response = _mapper.Map<ImageEntity, CreateImageResponse>(deletedImage);
+         return response;
       }
 
       public async Task<CreateImageResponse> GetImageByIdService(Guid id, CancellationToken cancellationToken)
       {
-         var result = await _imageRepository.GetImageByIdAsync(id, cancellationToken);
-         return ConvertEntityIntoResponse.GetImageResponse(result);
+         var image = await _imageRepository.GetImageByIdAsync(id, cancellationToken);
+         var response = _mapper.Map<ImageEntity, CreateImageResponse>(image);
+         return response;
       }
    }
 }

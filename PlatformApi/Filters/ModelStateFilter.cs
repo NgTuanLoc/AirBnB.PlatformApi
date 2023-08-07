@@ -16,7 +16,7 @@ namespace PlatformApi.Filters
             {
                var error = state.Key;
                var ErrorMessageList = state.Value.Errors.Select(e => e.ErrorMessage).ToArray();
-               if (ErrorMessageList.Count() != 0)
+               if (ErrorMessageList.Length != 0)
                {
                   errors.Add(error, ErrorMessageList);
                }

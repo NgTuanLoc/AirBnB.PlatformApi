@@ -97,7 +97,6 @@ namespace Infrastructure.Repositories
 
          if (existedRoom == null) throw new NotFoundException($"Room with id {roomId} is not found!");
 
-
          var reservationList = await (from reservation in _context.Reservation
                                       join room in _context.Room on reservation.Room equals room
                                       join user in _context.Users on reservation.User equals user

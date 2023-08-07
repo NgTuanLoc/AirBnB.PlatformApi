@@ -1,3 +1,4 @@
+using AutoMapper;
 using Core.Domain.Entities;
 using Core.Domain.RepositoryInterface;
 using Core.Models.Room;
@@ -16,21 +17,24 @@ namespace Core.Services
    public class RoomService : IRoomService
    {
       private readonly IRoomRepository _roomRepository;
-      public RoomService(IRoomRepository roomRepository)
+      private readonly IMapper _mapper;
+      public RoomService(IRoomRepository roomRepository, IMapper mapper)
       {
          _roomRepository = roomRepository;
+         _mapper = mapper;
       }
       public async Task<CreateRoomResponse> CreateRoomService(CreateRoomRequest request, CancellationToken cancellationToken)
       {
-         var result = await _roomRepository.CreateRoomAsync(request, cancellationToken);
-
-         return ConvertEntityIntoResponse.GetRoomResponse(result);
+         var createdRoom = await _roomRepository.CreateRoomAsync(request, cancellationToken);
+         var response = _mapper.Map<Room, CreateRoomResponse>(createdRoom);
+         return response;
       }
       public async Task<CreateRoomResponse> GetRoomByIdService(Guid id, CancellationToken cancellationToken)
       {
-         var result = await _roomRepository.GetRoomByIdAsync(id, cancellationToken);
+         var room = await _roomRepository.GetRoomByIdAsync(id, cancellationToken);
+         var response = _mapper.Map<Room, CreateRoomResponse>(room);
 
-         return ConvertEntityIntoResponse.GetRoomResponse(result);
+         return response;
       }
 
       public async Task<List<CreateRoomResponse>> GetAllRoomListService(CancellationToken cancellationToken)
@@ -40,7 +44,7 @@ namespace Core.Services
 
          foreach (var room in roomList)
          {
-            response.Add(ConvertEntityIntoResponse.GetRoomResponse(room));
+            response.Add(_mapper.Map<Room, CreateRoomResponse>(room));
          }
 
          return response;
@@ -48,14 +52,16 @@ namespace Core.Services
 
       public async Task<CreateRoomResponse> DeleteRoomByIdService(Guid id, CancellationToken cancellationToken)
       {
-         var result = await _roomRepository.DeleteRoomByIdAsync(id, cancellationToken);
-         return ConvertEntityIntoResponse.GetRoomResponse(result);
+         var deletedRoom = await _roomRepository.DeleteRoomByIdAsync(id, cancellationToken);
+         var response = _mapper.Map<Room, CreateRoomResponse>(deletedRoom);
+         return response;
       }
 
       public async Task<CreateRoomResponse> UpdateRoomByIdService(Guid id, UpdateRoomRequest request, CancellationToken cancellationToken)
       {
-         var result = await _roomRepository.UpdateRoomByIdAsync(id, request, cancellationToken);
-         return ConvertEntityIntoResponse.GetRoomResponse(result);
+         var updatedRoom = await _roomRepository.UpdateRoomByIdAsync(id, request, cancellationToken);
+         var response = _mapper.Map<Room, CreateRoomResponse>(updatedRoom);
+         return response;
       }
    }
 }

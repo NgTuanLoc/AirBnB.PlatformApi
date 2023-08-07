@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using Core.Domain.IdentityEntities;
 using Core.Models.Role;
 using Microsoft.AspNetCore.Identity;
@@ -18,9 +19,11 @@ namespace Core.Services
     public class RoleService : IRoleService
     {
         private readonly RoleManager<ApplicationRole> _roleManager;
-        public RoleService(RoleManager<ApplicationRole> roleManager)
+        private readonly IMapper _mapper;
+        public RoleService(RoleManager<ApplicationRole> roleManager, IMapper mapper)
         {
             _roleManager = roleManager;
+            _mapper = mapper;
         }
 
         public async Task<CreateRoleResponse> CreateRoleService(CreateRoleRequest request, CancellationToken cancellationToken)
@@ -34,8 +37,9 @@ namespace Core.Services
                 Name = request.RoleName
             };
             await _roleManager.CreateAsync(newRole);
+            var response = _mapper.Map<ApplicationRole, CreateRoleResponse>(newRole);
 
-            return ConvertApplicationRoleIntoCreateRoleResponse(newRole);
+            return response;
         }
 
         public async Task<CreateRoleResponse> DeleteRoleByIdService(Guid id, CancellationToken cancellationToken)
@@ -45,8 +49,9 @@ namespace Core.Services
             if (existedRole == null) throw new ValidationException("Role does not existed!");
 
             await _roleManager.DeleteAsync(existedRole);
+            var response = _mapper.Map<ApplicationRole, CreateRoleResponse>(existedRole);
 
-            return ConvertApplicationRoleIntoCreateRoleResponse(existedRole);
+            return response;
         }
 
         public List<CreateRoleResponse> GetAllRoleListService()
@@ -56,7 +61,7 @@ namespace Core.Services
 
             foreach (var role in roleList)
             {
-                roleListResponse.Add(ConvertApplicationRoleIntoCreateRoleResponse(role));
+                roleListResponse.Add(_mapper.Map<ApplicationRole, CreateRoleResponse>(role));
             }
 
             return roleListResponse;
@@ -67,8 +72,9 @@ namespace Core.Services
             var existedRole = await _roleManager.FindByIdAsync(id.ToString());
 
             if (existedRole == null) throw new ValidationException("Role does not existed!");
+            var response = _mapper.Map<ApplicationRole, CreateRoleResponse>(existedRole);
 
-            return ConvertApplicationRoleIntoCreateRoleResponse(existedRole);
+            return response;
         }
 
         public async Task<CreateRoleResponse> UpdateRoleByIdService(Guid id, CreateRoleRequest request, CancellationToken cancellationToken)
@@ -79,8 +85,9 @@ namespace Core.Services
 
             existedRole.Name = request.RoleName;
             await _roleManager.UpdateAsync(existedRole);
+            var response = _mapper.Map<ApplicationRole, CreateRoleResponse>(existedRole);
 
-            return ConvertApplicationRoleIntoCreateRoleResponse(existedRole);
+            return response;
         }
 
         public async Task<List<CreateRoleResponse>> CreateRoleListService(List<CreateRoleRequest> request, CancellationToken cancellationToken)
@@ -93,16 +100,6 @@ namespace Core.Services
                 response.Add(result);
             }
             return response;
-        }
-
-        private static CreateRoleResponse ConvertApplicationRoleIntoCreateRoleResponse(ApplicationRole role)
-        {
-            return new CreateRoleResponse()
-            {
-                Id = role.Id,
-                RoleName = role.Name ?? "Unknown",
-                NormalizedRoleName = role.NormalizedName ?? "Unknown"
-            };
         }
     }
 }
