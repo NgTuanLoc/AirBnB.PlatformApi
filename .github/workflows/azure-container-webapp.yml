@@ -1,36 +1,44 @@
-name: .NET CI/CD
+name: .NET App - Platform API CI/CD
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '7.x' # Change to your desired version
 
-            - name: Setup .NET
-              uses: actions/setup-dotnet@v2
-              with:
-                  dotnet-version: '7.x' # Change to your desired version
+    - name: Restore dependencies
+      run: dotnet restore
 
-            - name: Restore dependencies
-              run: dotnet restore
+    - name: Build application
+      run: dotnet build --configuration Release
 
-            - name: Build application
-              run: dotnet build --configuration Release
+    - name: Publish PlatformApi
+      run: dotnet publish -c Release -o ./publish
+      working-directory: ./PlatformApi # Navigate to the PlatformApi folder
 
-            - name: Publish PlatformApi
-              run: dotnet publish -c Release -o ./publish
-              working-directory: ./PlatformApi # Navigate to the PlatformApi folder
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
 
-            - name: Deploy to Azure App Service
-              uses: azure/webapps-deploy@v2
-              with:
-                  app-name: airbnb-ntl
-                  publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
-                  package: ./PlatformApi/publish # Use the correct path to the published PlatformApi folder
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: airbnb-ntl
+        publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
+        package: ./PlatformApi/publish # Use the correct path to the published PlatformApi folder
