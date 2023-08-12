@@ -482,8 +482,8 @@ $RECYCLE.BIN/
 bin/
 obj/
 *.txt
-*appsettings*
 /PlatformApi/Data
 .DS_Store
 out
 Test
+.github

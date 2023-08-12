@@ -34,14 +34,6 @@ namespace PlatformApi.Controllers
          return Ok(result);
       }
 
-      [AllowAnonymous]
-      [HttpDelete("logout")]
-      public async Task<IActionResult> Logout(CancellationToken cancellationToken)
-      {
-         var result = await _authService.LogoutService(cancellationToken);
-         return Ok(result);
-      }
-
       [Authorize(Roles = UserRoleOptions.ADMIN)]
       [HttpPost("restore")]
       public async Task<IActionResult> Restore(CancellationToken cancellationToken)
@@ -56,6 +48,14 @@ namespace PlatformApi.Controllers
       {
          var result = await _databaseService.SeedingService(cancellationToken);
 
+         return Ok(result);
+      }
+
+      [AllowAnonymous]
+      [HttpDelete("logout")]
+      public async Task<IActionResult> Logout(CancellationToken cancellationToken)
+      {
+         var result = await _authService.LogoutService(cancellationToken);
          return Ok(result);
       }
    }
