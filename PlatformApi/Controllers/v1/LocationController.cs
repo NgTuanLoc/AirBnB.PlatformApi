@@ -16,6 +16,7 @@ namespace PlatformApi.Controllers
          _logger = logger;
          _locationService = locationService;
       }
+      [AllowAnonymous]
       [HttpGet]
       public async Task<IActionResult> GetAllLocationList(CancellationToken cancellationToken)
       {

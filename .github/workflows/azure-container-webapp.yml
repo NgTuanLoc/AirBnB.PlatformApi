@@ -24,6 +24,9 @@ jobs:
     - name: Build application
       run: dotnet build --configuration Release
 
+    - name: Run unit tests
+      run: dotnet test --configuration Release --no-restore ./Test
+
     - name: Publish PlatformApi
       run: dotnet publish -c Release -o ./publish
       working-directory: ./PlatformApi # Navigate to the PlatformApi folder
@@ -35,6 +38,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Run unit tests
+      run: dotnet test --configuration Release --no-restore ./Test
 
     - name: Publish PlatformApi
       run: dotnet publish -c Release -o ./publish

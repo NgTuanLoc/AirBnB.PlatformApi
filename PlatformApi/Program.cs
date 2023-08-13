@@ -36,3 +36,5 @@ app.UseAuthorization(); //Validates access permissions of the user
 app.MapControllers(); //Execute the filter pipeline (action + filters)
 
 app.Run();
+
+public partial class Program { } //make the auto-generated Program accessible programmatically
