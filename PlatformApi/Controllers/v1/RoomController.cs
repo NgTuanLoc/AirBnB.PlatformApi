@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace PlatformApi.Controllers
 {
    [ApiVersion("1.0")]
-   // [Authorize]
+   [Authorize]
    public class RoomController : BaseController
    {
       private readonly ILogger<RoomController> _logger;

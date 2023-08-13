@@ -485,3 +485,5 @@ obj/
 /PlatformApi/Data
 .DS_Store
 out
+TestResults
+Coverage
