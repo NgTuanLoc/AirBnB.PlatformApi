@@ -16,10 +16,6 @@ namespace PlatformApi.Extensions
             {
                var connection = configuration.GetConnectionString("DefaultConnection");
 
-               if (env.IsDevelopment())
-               {
-                  connection = configuration.GetConnectionString("LocalDatabaseConnectionString");
-               }
                if (connection != null)
                {
                   options.UseSqlServer(connection);

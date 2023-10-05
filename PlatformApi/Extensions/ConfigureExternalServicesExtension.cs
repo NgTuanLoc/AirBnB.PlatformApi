@@ -36,10 +36,6 @@ namespace PlatformApi.Extensions
             services.AddScoped(_ =>
             {
                 var connection = configuration.GetConnectionString("BlobStorageConnection");
-                if (env.IsDevelopment())
-                {
-                    connection = configuration.GetConnectionString("LocalBlobStorageConnection");
-                }
                 return new BlobServiceClient(connection);
             });
 
