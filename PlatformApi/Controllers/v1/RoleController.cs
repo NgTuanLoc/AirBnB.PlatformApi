@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace PlatformApi.Controllers
 {
     [ApiVersion("1.0")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = UserRoleOptions.ADMIN)]
     public class RoleController : BaseController
     {
         private readonly ILogger<RoleController> _logger;
