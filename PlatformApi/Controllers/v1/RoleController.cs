@@ -41,6 +41,11 @@ namespace PlatformApi.Controllers
             var result = await _roleService.UpdateRoleByIdService(id, request, cancellationToken);
             return Ok(result);
         }
+        [HttpPatch("assign-role-to-user")]
+        public async Task<IActionResult> AssignRoleToUser(CancellationToken cancellationToken)
+        {
+            return Ok("AssignRoleToUser");
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoleById([FromRoute] Guid id, CancellationToken cancellationToken)
         {

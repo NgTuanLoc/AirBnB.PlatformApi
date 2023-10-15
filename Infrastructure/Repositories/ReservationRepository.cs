@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
       }
       public async Task<CreateReservationResponse> CreateReservationAsync(CreateReservationRequest request, CancellationToken cancellationToken)
       {
-         DateRange dateRange = new DateRange()
+         DateRange dateRange = new()
          {
             StartDate = request.StartDate,
             EndDate = request.EndDate,
@@ -136,7 +136,7 @@ namespace Infrastructure.Repositories
             existedReservation.Total = request.ToTalGuests;
          }
 
-         DateRange dateRange = new DateRange()
+         DateRange dateRange = new()
          {
             StartDate = existedReservation.StartDate,
             EndDate = existedReservation.EndDate,

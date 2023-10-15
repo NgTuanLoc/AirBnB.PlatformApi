@@ -26,7 +26,7 @@ namespace Core.Services
       }
       public async Task<string> RegisterService(RegisterRequest request, CancellationToken cancellationToken)
       {
-         ApplicationUser user = new ApplicationUser() { Email = request.Email, PhoneNumber = request.Phone, UserName = request.Email, PersonName = request.PersonName };
+         ApplicationUser user = new() { Email = request.Email, PhoneNumber = request.Phone, UserName = request.Email, PersonName = request.PersonName };
 
          var numberOfUsers = _userManager.Users.Count();
          var isAdminUser = false;
@@ -36,15 +36,15 @@ namespace Core.Services
             // Prepare Role List
             var roleList = new List<CreateRoleRequest>()
             {
-               new CreateRoleRequest()
+               new()
                {
                   RoleName = UserRoleOptions.ADMIN
                },
-               new CreateRoleRequest()
+               new()
                {
                   RoleName = UserRoleOptions.USER
                },
-               new CreateRoleRequest()
+               new()
                {
                   RoleName = UserRoleOptions.OWNER
                },
@@ -75,7 +75,6 @@ namespace Core.Services
       public async Task<ApplicationUser> LoginService(LoginRequest request, CancellationToken cancellationToken)
       {
          var user = await _userManager.FindByNameAsync(request.Email);
-
 
          if (user == null)
          {

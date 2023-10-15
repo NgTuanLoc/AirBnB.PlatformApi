@@ -92,7 +92,7 @@ namespace Core.Services
 
         public async Task<List<CreateRoleResponse>> CreateRoleListService(List<CreateRoleRequest> request, CancellationToken cancellationToken)
         {
-            List<CreateRoleResponse> response = new List<CreateRoleResponse>();
+            List<CreateRoleResponse> response = new();
 
             foreach (var role in request)
             {
