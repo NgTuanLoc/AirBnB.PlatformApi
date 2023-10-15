@@ -12,11 +12,17 @@ namespace PlatformApi.Middlewares
             AuthorizationPolicy policy,
             PolicyAuthorizationResult authorizeResult)
         {
-
-            if (authorizeResult.Challenged || authorizeResult.Forbidden)
+            // authorizeResult.Challenged - not authenticated
+            // authorizeResult.Forbidden - role is not valid
+            if (authorizeResult.Challenged)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                await context.Response.WriteAsync("You are not authorized to access this route");
+                await context.Response.WriteAsync("You need to login!");
+            }
+            else if (authorizeResult.Forbidden)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                await context.Response.WriteAsync("You are not authorized to access this route!");
             }
             else
             {

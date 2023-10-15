@@ -488,3 +488,5 @@ out
 TestResults
 Coverage
 /sql-volume
+/PlatformApi/appsettings.Development.json
+/PlatformApi/appsettings.json

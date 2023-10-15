@@ -4,7 +4,6 @@ using Core.Utils;
 using Microsoft.AspNetCore.Authorization;
 using PlatformApi.Filters;
 using PlatformApi.Middlewares;
-using PlatformApi.Policy;
 
 namespace PlatformApi.Extensions
 {
@@ -48,7 +47,6 @@ namespace PlatformApi.Extensions
             services.AddSingleton(mapperObject);
 
             // Add Middleware
-            services.AddSingleton<IAuthorizationMiddlewareResultHandler, UnauthorizedHandler>();
             services.AddTransient<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 
             return services;
