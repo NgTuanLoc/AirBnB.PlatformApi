@@ -74,13 +74,7 @@ namespace Core.Services
       }
       public async Task<ApplicationUser> LoginService(LoginRequest request, CancellationToken cancellationToken)
       {
-         var user = await _userManager.FindByNameAsync(request.Email);
-
-         if (user == null)
-         {
-            throw new ValidationException("User not found !");
-         }
-
+         var user = await _userManager.FindByNameAsync(request.Email) ?? throw new ValidationException("User not found !");
          var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: true, lockoutOnFailure: true);
 
          if (result.IsLockedOut)

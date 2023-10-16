@@ -19,10 +19,7 @@ namespace Infrastructure.Repositories
       }
       public async Task<Review> CreateReviewByRoomIdAsync(CreateReviewRequest request, Guid roomId, CancellationToken cancellationToken)
       {
-         var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken);
-
-         if (existedRoom == null) throw new NotFoundException($"Room with id {roomId} is not found");
-
+         var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken) ?? throw new NotFoundException($"Room with id {roomId} is not found");
          var existedUser = await _userService.GetUserService();
 
          var existedReservation = await (
@@ -31,10 +28,7 @@ namespace Infrastructure.Repositories
             join user in _context.Users on reservation.User equals user
             where room.Id == roomId && user.Id == existedUser.Id
             select reservation
-            ).FirstOrDefaultAsync(cancellationToken);
-
-         if (existedReservation == null) throw new ValidationException($"This user does not have a reservation for this room");
-
+            ).FirstOrDefaultAsync(cancellationToken) ?? throw new ValidationException($"This user does not have a reservation for this room");
          var newReviewId = Guid.NewGuid();
          var newReview = new Review()
          {
@@ -56,18 +50,15 @@ namespace Infrastructure.Repositories
 
       public async Task<List<Review>> GetAllReviewsByRoomIdAsync(Guid roomId, CancellationToken cancellationToken)
       {
-         var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken);
-
-         if (existedRoom == null) throw new NotFoundException($"Room with id {roomId} is not found");
-
+         var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken) ?? throw new NotFoundException($"Room with id {roomId} is not found");
          var reviewList = await (
-            from review in _context.Review
-            join reservation in _context.Reservation on review.Reservation equals reservation
-            join user in _context.Users on review.User equals user
-            join room in _context.Room on reservation.Room equals room
-            where room.Id == roomId
-            select review
-         ).ToListAsync(cancellationToken);
+         from review in _context.Review
+         join reservation in _context.Reservation on review.Reservation equals reservation
+         join user in _context.Users on review.User equals user
+         join room in _context.Room on reservation.Room equals room
+         where room.Id == roomId
+         select review
+      ).ToListAsync(cancellationToken);
 
          return reviewList;
       }
@@ -76,10 +67,7 @@ namespace Infrastructure.Repositories
       {
          var existedReview = await _context.Review
          .Include("Reservation.Room")
-         .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-         if (existedReview == null) throw new NotFoundException($"review with id {id} is not found");
-
+         .FirstOrDefaultAsync(r => r.Id == id, cancellationToken) ?? throw new NotFoundException($"review with id {id} is not found");
          var user = await _userService.GetUserService();
 
          if (existedReview.User == null || existedReview?.User.Id != user.Id) throw new NotFoundException($"Update review failed ! Only the author can update the review");
@@ -100,10 +88,7 @@ namespace Infrastructure.Repositories
       {
          var existedReview = await _context.Review
          .Include("Reservation.Room")
-         .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-         if (existedReview == null) throw new NotFoundException($"review with id {id} is not found");
-
+         .FirstOrDefaultAsync(r => r.Id == id, cancellationToken) ?? throw new NotFoundException($"review with id {id} is not found");
          var user = await _userService.GetUserService();
 
          if (existedReview.User == null || existedReview?.User.Id != user.Id) throw new NotFoundException($"Delete review failed ! Only the author can update the review");

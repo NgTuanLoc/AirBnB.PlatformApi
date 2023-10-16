@@ -66,13 +66,7 @@ namespace Infrastructure.Repositories
       private async Task SeedingLocationAsync(ApplicationUser user, CancellationToken cancellationToken)
       {
          string locationJson = System.IO.File.ReadAllText("./Data/Json/location.json");
-         List<LocationModel>? locationList = System.Text.Json.JsonSerializer.Deserialize<List<LocationModel>>(locationJson);
-
-         if (locationList == null)
-         {
-            throw new ValidationException("Fail to seeding room data");
-         }
-
+         List<LocationModel>? locationList = System.Text.Json.JsonSerializer.Deserialize<List<LocationModel>>(locationJson) ?? throw new ValidationException("Fail to seeding room data");
          foreach (var location in locationList)
          {
             var imageStream = ImageToStream(location.ImagePath);

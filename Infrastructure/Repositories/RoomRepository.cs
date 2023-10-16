@@ -79,9 +79,7 @@ namespace Infrastructure.Repositories
             .Include(item => item.Location)
             .Include(item => item.ImageList)
             .Include(item => item.Owner)
-            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (room == null) throw new NotFoundException($"Room with id {id} can not be found !");
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new NotFoundException($"Room with id {id} can not be found !");
          ;
 
          return room;
@@ -104,9 +102,7 @@ namespace Infrastructure.Repositories
             .Include(item => item.Location)
             .Include(item => item.ImageList)
             .Include(item => item.Owner)
-            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (room == null) throw new NotFoundException($"Room with id {id} can not be found !");
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new NotFoundException($"Room with id {id} can not be found !");
          ;
 
          if (room.ImageList != null)
@@ -129,9 +125,7 @@ namespace Infrastructure.Repositories
             .Include(item => item.Location)
             .Include(item => item.ImageList)
             .Include(item => item.Owner)
-            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (room == null) throw new NotFoundException($"Room with id {id} can not be found !");
+            .FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new NotFoundException($"Room with id {id} can not be found !");
          ;
 
          // Update Core Field
@@ -160,10 +154,7 @@ namespace Infrastructure.Repositories
 
          if (request.LocationId != null)
          {
-            var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == request.LocationId, cancellationToken);
-
-            if (location == null) throw new NotFoundException($"Location with id {request.LocationId} can not be found !");
-
+            var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == request.LocationId, cancellationToken) ?? throw new NotFoundException($"Location with id {request.LocationId} can not be found !");
             room.Location = location;
          }
 

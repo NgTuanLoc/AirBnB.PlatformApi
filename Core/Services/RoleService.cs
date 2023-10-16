@@ -44,10 +44,7 @@ namespace Core.Services
 
         public async Task<CreateRoleResponse> DeleteRoleByIdService(Guid id, CancellationToken cancellationToken)
         {
-            var existedRole = await _roleManager.FindByIdAsync(id.ToString());
-
-            if (existedRole == null) throw new ValidationException("Role does not existed!");
-
+            var existedRole = await _roleManager.FindByIdAsync(id.ToString()) ?? throw new ValidationException("Role does not existed!");
             await _roleManager.DeleteAsync(existedRole);
             var response = _mapper.Map<ApplicationRole, CreateRoleResponse>(existedRole);
 
@@ -69,9 +66,7 @@ namespace Core.Services
 
         public async Task<CreateRoleResponse> GetRoleByIdService(Guid id, CancellationToken cancellationToken)
         {
-            var existedRole = await _roleManager.FindByIdAsync(id.ToString());
-
-            if (existedRole == null) throw new ValidationException("Role does not existed!");
+            var existedRole = await _roleManager.FindByIdAsync(id.ToString()) ?? throw new ValidationException("Role does not existed!");
             var response = _mapper.Map<ApplicationRole, CreateRoleResponse>(existedRole);
 
             return response;
@@ -79,10 +74,7 @@ namespace Core.Services
 
         public async Task<CreateRoleResponse> UpdateRoleByIdService(Guid id, CreateRoleRequest request, CancellationToken cancellationToken)
         {
-            var existedRole = await _roleManager.FindByIdAsync(id.ToString());
-
-            if (existedRole == null) throw new ValidationException("Role does not existed!");
-
+            var existedRole = await _roleManager.FindByIdAsync(id.ToString()) ?? throw new ValidationException("Role does not existed!");
             existedRole.Name = request.RoleName;
             await _roleManager.UpdateAsync(existedRole);
             var response = _mapper.Map<ApplicationRole, CreateRoleResponse>(existedRole);

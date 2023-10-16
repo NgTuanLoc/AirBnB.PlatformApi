@@ -71,10 +71,7 @@ namespace Infrastructure.Repositories
          var reservation = await _context.Reservation
             .Include(r => r.Room)
             .Include(r => r.User)
-            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-         if (reservation == null) throw new NotFoundException($"Reservation with id {id} is not found !");
-
+            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken) ?? throw new NotFoundException($"Reservation with id {id} is not found !");
          _context.Reservation.Remove(reservation);
 
          await _context.SaveChangesAsync(cancellationToken);
@@ -93,10 +90,7 @@ namespace Infrastructure.Repositories
 
       public async Task<List<CreateReservationResponse>> GetAllReservationByRoomIdAsync(Guid roomId, CancellationToken cancellationToken)
       {
-         var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken);
-
-         if (existedRoom == null) throw new NotFoundException($"Room with id {roomId} is not found!");
-
+         var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken) ?? throw new NotFoundException($"Room with id {roomId} is not found!");
          var reservationList = await (from reservation in _context.Reservation
                                       join room in _context.Room on reservation.Room equals room
                                       join user in _context.Users on reservation.User equals user
@@ -111,7 +105,7 @@ namespace Infrastructure.Repositories
                                          TotalGuest = reservation.Total,
                                          TotalPrice = reservation.Price
                                       })
-                                      .ToListAsync(cancellationToken);
+                                   .ToListAsync(cancellationToken);
          return reservationList;
       }
       public async Task<CreateReservationResponse> UpdateReservationByIdAsync(Guid id, UpdateReservationRequest request, CancellationToken cancellationToken)
@@ -119,10 +113,7 @@ namespace Infrastructure.Repositories
          var existedReservation = await _context.Reservation
             .Include(r => r.User)
             .Include(r => r.Room)
-            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-         if (existedReservation == null) throw new NotFoundException($"Reservation with id {id} is not found !");
-
+            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken) ?? throw new NotFoundException($"Reservation with id {id} is not found !");
          if (request.StartDate != null)
          {
             existedReservation.StartDate = request.StartDate;

@@ -40,10 +40,7 @@ namespace Infrastructure.Repositories
       }
       public async Task<Location> GetLocationByIdAsync(Guid id, CancellationToken cancellationToken)
       {
-         var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (location == null) throw new NotFoundException($"Location with id {id} can not be found !");
-
+         var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new NotFoundException($"Location with id {id} can not be found !");
          return location;
       }
 
@@ -55,10 +52,7 @@ namespace Infrastructure.Repositories
 
       public async Task<Location> DeleteLocationByIdAsync(Guid id, CancellationToken cancellationToken)
       {
-         var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (location == null) throw new NotFoundException($"Location with id {id} can not be found !");
-
+         var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new NotFoundException($"Location with id {id} can not be found !");
          _context.Remove(location);
          await _context.SaveChangesAsync(cancellationToken);
          return location;
@@ -66,10 +60,7 @@ namespace Infrastructure.Repositories
 
       public async Task<Location> UpdateLocationByIdAsync(Guid id, UpdateLocationRequest request, string? imageUrl, CancellationToken cancellationToken)
       {
-         var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (location == null) throw new NotFoundException($"Location with id {id} can not be found !");
-
+         var location = await _context.Location.FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new NotFoundException($"Location with id {id} can not be found !");
          if (request.Name != null) location.Name = request.Name;
          if (request.Country != null) location.Country = request.Country;
          if (request.Province != null) location.Province = request.Province;

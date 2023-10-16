@@ -76,18 +76,13 @@ namespace Infrastructure.Repositories
 
       public async Task<ImageEntity> GetImageByIdAsync(Guid id, CancellationToken cancellationToken)
       {
-         var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (image == null) throw new ValidationException("Image not found !");
-
+         var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new ValidationException("Image not found !");
          return image;
       }
 
       public async Task<ImageEntity> DeleteImageByIdAsync(Guid id, CancellationToken cancellationToken)
       {
-         var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (image == null) throw new ValidationException("Image not found !");
+         var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new ValidationException("Image not found !");
 
          // Remove Image Data From Blob Storage
          await DeleteImageFileFromBlobStorageAsync(image.HighQualityUrl);
@@ -101,9 +96,7 @@ namespace Infrastructure.Repositories
 
       public async Task<ImageEntity> UpdateImageByIdAsync(Guid id, UpdateImageRequest request, UploadImageResponse? urlList, CancellationToken cancellationToken)
       {
-         var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
-
-         if (image == null) throw new ValidationException("Image not found !");
+         var image = await _context.Image.FirstOrDefaultAsync(item => item.Id == id, cancellationToken) ?? throw new ValidationException("Image not found !");
 
          // Update Image
          if (request.Title != null)
@@ -118,10 +111,7 @@ namespace Infrastructure.Repositories
 
          if (request.RoomId != null)
          {
-            var room = await _context.Room.FirstOrDefaultAsync(item => item.Id == request.RoomId);
-
-            if (room == null) throw new ValidationException("Room not found !");
-
+            var room = await _context.Room.FirstOrDefaultAsync(item => item.Id == request.RoomId) ?? throw new ValidationException("Room not found !");
             image.Room = room;
          }
 

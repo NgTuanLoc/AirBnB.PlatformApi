@@ -20,20 +20,8 @@ namespace Infrastructure.Repositories
       public async Task<ApplicationUser> GetUserAsync()
       {
          HttpContext context = _httpContextAccessor.HttpContext;
-         var email = context?.User?.Identity?.Name;
-
-         if (email == null)
-         {
-            throw new ValidationException("User not found !");
-         }
-
-         var user = await _userManager.FindByEmailAsync(email);
-
-         if (user == null)
-         {
-            throw new ValidationException("User not found !");
-         }
-
+         var email = (context?.User?.Identity?.Name) ?? throw new ValidationException("User not found !");
+         var user = await _userManager.FindByEmailAsync(email) ?? throw new ValidationException("User not found !");
          return user;
       }
 
@@ -51,25 +39,14 @@ namespace Infrastructure.Repositories
 
       public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordRequest request, CancellationToken cancellationToken)
       {
-         var user = await _userManager.FindByEmailAsync(request.Email);
-
-         if (user == null)
-         {
-            throw new ValidationException("User not found !");
-         }
-
+         var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new ValidationException("User not found !");
          IdentityResult result = await _userManager.ResetPasswordAsync(user, request.ResetPasswordToken, request.NewPassword);
          return result;
       }
 
       public async Task<IdentityResult> UpdateUserAsync(UpdateUserRequest request, CancellationToken cancellationToken)
       {
-         var user = await _userManager.FindByEmailAsync(request.Email);
-
-         if (user == null)
-         {
-            throw new ValidationException("User not found !");
-         }
+         var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new ValidationException("User not found !");
 
          // Update User
          if (request.PersonName != null)
