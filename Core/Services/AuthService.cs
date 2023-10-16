@@ -4,13 +4,15 @@ using Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity;
 using Core.Constants;
 using Core.Models.Role;
+using Core.Models.User;
+using AutoMapper;
 
 namespace Core.Services
 {
    public interface IAuthService
    {
       Task<string> RegisterService(RegisterRequest request, CancellationToken cancellationToken);
-      Task<ApplicationUser> LoginService(LoginRequest request, CancellationToken cancellationToken);
+      Task<CreateUserResponse> LoginService(LoginRequest request, CancellationToken cancellationToken);
       Task<string> LogoutService(CancellationToken cancellationToken);
    }
    public class AuthService : IAuthService
@@ -18,11 +20,13 @@ namespace Core.Services
       private readonly UserManager<ApplicationUser> _userManager;
       private readonly SignInManager<ApplicationUser> _signInManager;
       private readonly IRoleService _roleService;
-      public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManger, IRoleService roleService)
+      private readonly IMapper _mapper;
+      public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManger, IRoleService roleService, IMapper mapper)
       {
          _userManager = userManager;
          _signInManager = signInManger;
          _roleService = roleService;
+         _mapper = mapper;
       }
       public async Task<string> RegisterService(RegisterRequest request, CancellationToken cancellationToken)
       {
@@ -72,7 +76,7 @@ namespace Core.Services
          await _signInManager.SignInAsync(user, isPersistent: true);
          return "register succeed";
       }
-      public async Task<ApplicationUser> LoginService(LoginRequest request, CancellationToken cancellationToken)
+      public async Task<CreateUserResponse> LoginService(LoginRequest request, CancellationToken cancellationToken)
       {
          var user = await _userManager.FindByNameAsync(request.Email) ?? throw new ValidationException("User not found !");
          var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, isPersistent: true, lockoutOnFailure: true);
@@ -86,7 +90,11 @@ namespace Core.Services
             throw new ValidationException($"Wrong Password! You have tried {user.AccessFailedCount} times");
          }
 
-         return user;
+         CreateUserResponse response = _mapper.Map<ApplicationUser, CreateUserResponse>(user);
+         var roleList = await _userManager.GetRolesAsync(user);
+         response.RoleList = roleList;
+
+         return response;
       }
 
       public async Task<string> LogoutService(CancellationToken cancellationToken)

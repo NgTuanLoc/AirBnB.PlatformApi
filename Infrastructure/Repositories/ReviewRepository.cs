@@ -11,16 +11,16 @@ namespace Infrastructure.Repositories
    public class ReviewRepository : IReviewRepository
    {
       private readonly ApplicationDbContext _context;
-      private readonly IUserService _userService;
-      public ReviewRepository(ApplicationDbContext context, IUserService userService)
+      private readonly IUserRepository _userRepository;
+      public ReviewRepository(ApplicationDbContext context, IUserRepository userRepository)
       {
          _context = context;
-         _userService = userService;
+         _userRepository = userRepository;
       }
       public async Task<Review> CreateReviewByRoomIdAsync(CreateReviewRequest request, Guid roomId, CancellationToken cancellationToken)
       {
          var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken) ?? throw new NotFoundException($"Room with id {roomId} is not found");
-         var existedUser = await _userService.GetUserService();
+         var existedUser = await _userRepository.GetUserAsync();
 
          var existedReservation = await (
             from reservation in _context.Reservation
@@ -68,7 +68,7 @@ namespace Infrastructure.Repositories
          var existedReview = await _context.Review
          .Include("Reservation.Room")
          .FirstOrDefaultAsync(r => r.Id == id, cancellationToken) ?? throw new NotFoundException($"review with id {id} is not found");
-         var user = await _userService.GetUserService();
+         var user = await _userRepository.GetUserAsync();
 
          if (existedReview.User == null || existedReview?.User.Id != user.Id) throw new NotFoundException($"Update review failed ! Only the author can update the review");
 
@@ -89,7 +89,7 @@ namespace Infrastructure.Repositories
          var existedReview = await _context.Review
          .Include("Reservation.Room")
          .FirstOrDefaultAsync(r => r.Id == id, cancellationToken) ?? throw new NotFoundException($"review with id {id} is not found");
-         var user = await _userService.GetUserService();
+         var user = await _userRepository.GetUserAsync();
 
          if (existedReview.User == null || existedReview?.User.Id != user.Id) throw new NotFoundException($"Delete review failed ! Only the author can update the review");
 

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using AutoMapper;
 using Core.Domain.IdentityEntities;
 using Core.Domain.RepositoryInterface;
 using Core.Exceptions;
@@ -9,7 +10,7 @@ namespace Core.Services
 {
    public interface IUserService
    {
-      Task<ApplicationUser> GetUserService();
+      Task<CreateUserResponse> GetUserService();
       Task<IdentityResult> ChangePasswordService(ChangePasswordRequest request, CancellationToken cancellationToken);
       Task<IdentityResult> ResetPasswordService(ResetPasswordRequest request, CancellationToken cancellationToken);
       Task<string> GetResetPasswordTokenService();
@@ -20,16 +21,24 @@ namespace Core.Services
    {
       private readonly UserManager<ApplicationUser> _userManager;
       private readonly IUserRepository _userRepository;
-      public UserService(UserManager<ApplicationUser> userManager, IUserRepository userRepository)
+      private readonly IMapper _mapper;
+
+      public UserService(UserManager<ApplicationUser> userManager, IUserRepository userRepository, IMapper mapper)
       {
          _userManager = userManager;
          _userRepository = userRepository;
+         _mapper = mapper;
       }
 
-      public async Task<ApplicationUser> GetUserService()
+      public async Task<CreateUserResponse> GetUserService()
       {
          var user = await _userRepository.GetUserAsync();
-         return user;
+
+         CreateUserResponse response = _mapper.Map<ApplicationUser, CreateUserResponse>(user);
+         var roleList = await _userManager.GetRolesAsync(user);
+         response.RoleList = roleList;
+
+         return response;
       }
 
       public async Task<IdentityResult> ChangePasswordService(ChangePasswordRequest request, CancellationToken cancellationToken)

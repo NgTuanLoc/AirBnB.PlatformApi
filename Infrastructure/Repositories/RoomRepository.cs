@@ -13,20 +13,20 @@ namespace Infrastructure.Repositories
 {
    public class RoomRepository : IRoomRepository
    {
-      private readonly IUserService _userService;
+      private readonly IUserRepository _userRepository;
       private readonly IImageRepository _imageRepository;
       private readonly IImageService _imageService;
       private readonly ApplicationDbContext _context;
-      public RoomRepository(ApplicationDbContext context, IUserService userService, IImageRepository imageRepository, IImageService imageService)
+      public RoomRepository(ApplicationDbContext context, IUserRepository userRepository, IImageRepository imageRepository, IImageService imageService)
       {
          _context = context;
-         _userService = userService;
+         _userRepository = userRepository;
          _imageRepository = imageRepository;
          _imageService = imageService;
       }
       public async Task<Room> CreateRoomAsync(CreateRoomRequest request, CancellationToken cancellationToken)
       {
-         var user = await _userService.GetUserService();
+         var user = await _userRepository.GetUserAsync();
          Location? location = null;
 
          if (request.LocationId != null)
@@ -158,7 +158,7 @@ namespace Infrastructure.Repositories
             room.Location = location;
          }
 
-         var user = await _userService.GetUserService();
+         var user = await _userRepository.GetUserAsync();
          room.ModifiedBy = user.Email;
          room.ModifiedDate = DateTime.Now;
 

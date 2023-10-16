@@ -16,13 +16,13 @@ namespace Infrastructure.Repositories
    {
       private readonly ApplicationDbContext _context;
       private readonly BlobServiceClient _blobServiceClient;
-      private readonly IUserService _userService;
+      private readonly IUserRepository _userRepository;
       private readonly IImageRepository _imageRepository;
-      public DatabaseRepository(ApplicationDbContext context, BlobServiceClient blobServiceClient, IUserService userService, IImageRepository imageRepository, IImageService imageService)
+      public DatabaseRepository(ApplicationDbContext context, BlobServiceClient blobServiceClient, IUserRepository userRepository, IImageRepository imageRepository, IImageService imageService)
       {
          _context = context;
          _blobServiceClient = blobServiceClient;
-         _userService = userService;
+         _userRepository = userRepository;
          _imageRepository = imageRepository;
       }
       public async Task<string> RestoreAsync(CancellationToken cancellationToken)
@@ -57,7 +57,7 @@ namespace Infrastructure.Repositories
 
       public async Task<string> SeedingAsync(CancellationToken cancellationToken)
       {
-         var user = await _userService.GetUserService();
+         var user = await _userRepository.GetUserAsync();
          await SeedingLocationAsync(user, cancellationToken);
          await SeedingRoomAsync(user, cancellationToken);
          return "Seeding Data Successful";

@@ -6,6 +6,7 @@ using Core.Models.Location;
 using Core.Models.Review;
 using Core.Models.Role;
 using Core.Models.Room;
+using Core.Models.User;
 using ImageEntity = Core.Domain.Entities.Image;
 
 namespace Core.Utils
@@ -18,6 +19,7 @@ namespace Core.Utils
             CreateMap<ImageEntity, CreateImageResponse>();
             CreateMap<Room, CreateRoomResponse>();
             CreateMap<ApplicationRole, CreateRoleResponse>();
+            CreateMap<ApplicationUser, CreateUserResponse>();
             CreateMap<Review, CreateReviewResponse>();
         }
     }

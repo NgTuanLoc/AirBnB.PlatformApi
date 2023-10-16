@@ -18,10 +18,12 @@ namespace Core.Services
     }
     public class RoleService : IRoleService
     {
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IMapper _mapper;
-        public RoleService(RoleManager<ApplicationRole> roleManager, IMapper mapper)
+        public RoleService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IMapper mapper)
         {
+            _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
         }
