@@ -59,61 +59,62 @@ namespace Infrastructure.Repositories
       {
          var user = await _userRepository.GetUserAsync();
          await SeedingLocationBlobStorageAsync(user, cancellationToken);
+         await SeedingRoomBlobStorageAsync(user, cancellationToken);
          // await SeedingLocationAsync(user, cancellationToken);
          // await SeedingRoomAsync(user, cancellationToken);
          return "Seeding Data Successful";
       }
 
-      private async Task SeedingLocationAsync(ApplicationUser user, CancellationToken cancellationToken)
-      {
-         string locationJson = System.IO.File.ReadAllText("./Data/Json/location.json");
-         List<LocationModel>? locationList = System.Text.Json.JsonSerializer.Deserialize<List<LocationModel>>(locationJson) ?? throw new ValidationException("Fail to seeding room data");
-         foreach (var location in locationList)
-         {
-            var imageStream = ImageToStream(location.ImagePath);
-            Console.WriteLine("fileName room", location.ImagePath);
+      // private async Task SeedingLocationAsync(ApplicationUser user, CancellationToken cancellationToken)
+      // {
+      //    string locationJson = System.IO.File.ReadAllText("./Data/Json/location.json");
+      //    List<LocationModel>? locationList = System.Text.Json.JsonSerializer.Deserialize<List<LocationModel>>(locationJson) ?? throw new ValidationException("Fail to seeding room data");
+      //    foreach (var location in locationList)
+      //    {
+      //       var imageStream = ImageToStream(location.ImagePath);
+      //       Console.WriteLine("fileName room", location.ImagePath);
 
-            var imageName = $"{DateHelper.GetDateTimeNowString()}_{location.ImagePath.Split("/").Last()}";
-            var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName, ConfigConstants.BLOB_CONTAINER);
+      //       var imageName = $"{DateHelper.GetDateTimeNowString()}_{location.ImagePath.Split("/").Last()}";
+      //       var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName, ConfigConstants.BLOB_CONTAINER);
 
-            var newLocation = new Location()
-            {
-               Name = location.Name,
-               Province = location.Province,
-               Country = location.Country,
-               Image = imageUrl,
-               CreatedBy = user.Email ?? "Unknown",
-               CreatedDate = DateTime.Now
-            };
+      //       var newLocation = new Location()
+      //       {
+      //          Name = location.Name,
+      //          Province = location.Province,
+      //          Country = location.Country,
+      //          Image = imageUrl,
+      //          CreatedBy = user.Email ?? "Unknown",
+      //          CreatedDate = DateTime.Now
+      //       };
 
-            _context.Location.Add(newLocation);
-         }
+      //       _context.Location.Add(newLocation);
+      //    }
 
-         await _context.SaveChangesAsync(cancellationToken);
-      }
+      //    await _context.SaveChangesAsync(cancellationToken);
+      // }
 
-      private async Task SeedingRoomAsync(ApplicationUser user, CancellationToken cancellationToken)
-      {
-         string roomJson = File.ReadAllText("./Data/Json/room.json");
-         List<RoomModel>? roomList = System.Text.Json.JsonSerializer.Deserialize<List<RoomModel>>(roomJson);
-         var locationList = await _context.Location.ToListAsync(cancellationToken);
+      // private async Task SeedingRoomAsync(ApplicationUser user, CancellationToken cancellationToken)
+      // {
+      //    string roomJson = File.ReadAllText("./Data/Json/room.json");
+      //    List<RoomModel>? roomList = System.Text.Json.JsonSerializer.Deserialize<List<RoomModel>>(roomJson);
+      //    var locationList = await _context.Location.ToListAsync(cancellationToken);
 
-         if (roomList == null)
-         {
-            throw new ValidationException("Fail to seeding room data");
-         }
+      //    if (roomList == null)
+      //    {
+      //       throw new ValidationException("Fail to seeding room data");
+      //    }
 
-         foreach (var room in roomList)
-         {
-            var location = locationList.FirstOrDefault(l => l.Name == room.LocationName);
+      //    foreach (var room in roomList)
+      //    {
+      // var location = locationList.FirstOrDefault(l => l.Name == room.LocationName);
 
-            var newRoom = ConvertRoomModelIntoRoomEntity(room, location, user);
-            _context.Room.Add(newRoom);
-            await _context.SaveChangesAsync(cancellationToken);
+      // var newRoom = ConvertRoomModelIntoRoomEntity(room, location, user);
+      // _context.Room.Add(newRoom);
+      // await _context.SaveChangesAsync(cancellationToken);
 
-            await SeedingRoomImageAsync(room.ImagePath, newRoom, cancellationToken);
-         }
-      }
+      //       await SeedingRoomImageAsync(room.ImagePath, newRoom, cancellationToken);
+      //    }
+      // }
       // Seeding Image
       private async Task SeedingLocationBlobStorageAsync(ApplicationUser user, CancellationToken cancellationToken)
       {
@@ -159,6 +160,79 @@ namespace Infrastructure.Repositories
             }
          }
          await _context.SaveChangesAsync(cancellationToken);
+      }
+
+      private async Task SeedingRoomBlobStorageAsync(ApplicationUser user, CancellationToken cancellationToken)
+      {
+         var jsonBlobName = "Data/Json/room.json";
+         var sourceContainerName = ConfigConstants.SEEDING_DATA_CONTAINER;
+
+         var sourceContainerClient = _blobServiceClient.GetBlobContainerClient(sourceContainerName);
+
+         var jsonBlobClient = sourceContainerClient.GetBlobClient(jsonBlobName);
+
+         if (await jsonBlobClient.ExistsAsync(cancellationToken))
+         {
+            using var response = await jsonBlobClient.OpenReadAsync(cancellationToken: cancellationToken);
+            using var streamReader = new StreamReader(response);
+            var roomJson = streamReader.ReadToEnd();
+            var roomList = System.Text.Json.JsonSerializer.Deserialize<List<RoomModel>>(roomJson);
+            var locationList = await _context.Location.ToListAsync(cancellationToken);
+
+            if (roomList != null)
+            {
+               foreach (var room in roomList)
+               {
+                  var location = locationList.FirstOrDefault(l => l.Name == room.LocationName);
+
+                  var newRoom = ConvertRoomModelIntoRoomEntity(room, location, user);
+                  _context.Room.Add(newRoom);
+                  await _context.SaveChangesAsync(cancellationToken);
+
+                  foreach (var path in room.ImagePath)
+                  {
+                     var relativePath = path;
+                     relativePath = relativePath.Replace("..", "");
+                     var imagePath = "Data" + relativePath;
+
+                     var imageStream1 = await ImageToBlobStream(imagePath, sourceContainerClient, sourceContainerName);
+                     MemoryStream imageStream2 = new();
+                     MemoryStream imageStream3 = new();
+
+                     await imageStream1.CopyToAsync(imageStream2, cancellationToken);
+                     await imageStream1.CopyToAsync(imageStream3, cancellationToken);
+
+                     // Original Image
+                     var imageName = $"{DateHelper.GetDateTimeNowString()}_{path.Split("/").Last()}";
+                     var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream1, imageName, ConfigConstants.BLOB_CONTAINER);
+
+                     // var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream1, imageName, ConfigConstants.BLOB_CONTAINER);
+
+                     // Save Medium Size Image
+                     var processedMediumQualityImageStream = ProcessedImageFactory.TransformToMediumQualityImageFromStream(imageStream2);
+                     var processedMediumQualityFileName = $"{DateHelper.GetDateTimeNowString()}_medium_quality_{imageName}";
+                     var mediumQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedMediumQualityImageStream, processedMediumQualityFileName, ConfigConstants.BLOB_CONTAINER);
+
+                     // Save Small Size Image
+                     var processedSmallQualityImageStream = ProcessedImageFactory.TransformToLowQualityImageFromStream(imageStream3);
+                     var processedFileName = $"{DateHelper.GetDateTimeNowString()}_low_quality_{imageName}";
+                     var lowQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedSmallQualityImageStream, processedFileName, ConfigConstants.BLOB_CONTAINER);
+
+                     var newImage = new Image
+                     {
+                        Title = imageName,
+                        Description = "Image Description",
+                        LowQualityUrl = lowQualityUrl,
+                        MediumQualityUrl = mediumQualityUrl,
+                        HighQualityUrl = imageUrl,
+                        Room = newRoom
+                     };
+
+                     _context.Image.Add(newImage);
+                  }
+               }
+            }
+         }
       }
 
       private async Task SeedingRoomImageAsync(string folderPath, Room room, CancellationToken cancellationToken)
@@ -221,7 +295,6 @@ namespace Infrastructure.Repositories
 
          BlobClient blobClient = blobContainer.GetBlobClient(blobName);
          Stream stream = await blobClient.OpenReadAsync();
-
 
          MemoryStream memoryStream = new MemoryStream();
          await stream.CopyToAsync(memoryStream);

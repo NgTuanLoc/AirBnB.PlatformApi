@@ -18,7 +18,7 @@ namespace Core.Models.Database
         public float Price { get; set; }
         public float Latitude { get; set; }
         public float Longitude { get; set; }
-        public string ImagePath { get; set; } = default!;
+        public ICollection<string> ImagePath { get; set; } = default!;
         public string? LocationName { get; set; }
     }
     public class LocationModel
