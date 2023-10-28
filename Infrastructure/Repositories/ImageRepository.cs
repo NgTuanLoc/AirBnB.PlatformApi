@@ -22,9 +22,9 @@ namespace Infrastructure.Repositories
          _userRepository = userRepository;
       }
 
-      public async Task<string> UploadImageFileToBlobStorageAsync(Stream streamContent, string filename)
+      public async Task<string> UploadImageFileToBlobStorageAsync(Stream streamContent, string filename, string blobContainerName)
       {
-         var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(ConfigConstants.BlobContainer);
+         var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(blobContainerName);
          var blobStorageClient = blobStorageContainer.GetBlobClient(filename);
          streamContent.Position = 0;
          await blobStorageClient.UploadAsync(streamContent);

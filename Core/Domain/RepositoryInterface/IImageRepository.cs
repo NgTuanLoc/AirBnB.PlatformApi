@@ -5,7 +5,7 @@ namespace Core.Domain.RepositoryInterface
 {
    public interface IImageRepository
    {
-      Task<string> UploadImageFileToBlobStorageAsync(Stream streamContent, string filename);
+      Task<string> UploadImageFileToBlobStorageAsync(Stream streamContent, string filename, string blobContainerName);
       Task<string> DeleteImageFileFromBlobStorageAsync(string? imageUrl);
       Task<ImageEntity> CreateImageAsync(UploadImageRequest request, UploadImageResponse urlList, CancellationToken cancellationToken);
       Task<ImageEntity> GetImageByIdAsync(Guid id, CancellationToken cancellationToken);
