@@ -196,11 +196,13 @@ namespace Infrastructure.Repositories
                      var imagePath = "Data" + relativePath;
 
                      var imageStream1 = await ImageToBlobStream(imagePath, sourceContainerClient, sourceContainerName);
-                     MemoryStream imageStream2 = new();
-                     MemoryStream imageStream3 = new();
+                     var imageStream2 = await ImageToBlobStream(imagePath, sourceContainerClient, sourceContainerName);
+                     var imageStream3 = await ImageToBlobStream(imagePath, sourceContainerClient, sourceContainerName);
+                     // MemoryStream imageStream2 = new();
+                     // MemoryStream imageStream3 = new();
 
-                     await imageStream1.CopyToAsync(imageStream2, cancellationToken);
-                     await imageStream1.CopyToAsync(imageStream3, cancellationToken);
+                     // await imageStream1.CopyToAsync(imageStream2, cancellationToken);
+                     // await imageStream1.CopyToAsync(imageStream3, cancellationToken);
 
                      // Original Image
                      var imageName = $"{DateHelper.GetDateTimeNowString()}_{path.Split("/").Last()}";
