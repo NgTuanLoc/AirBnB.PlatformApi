@@ -35,17 +35,17 @@ namespace Core.Services
          // Save Original Image
          var fileName = $"{DateHelper.GetDateTimeNowString()}_high_quality{file.FileName.Replace(" ", "")}";
          var streamContent = file.OpenReadStream();
-         var highQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(streamContent, fileName, ConfigConstants.BlobContainer);
+         var highQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(streamContent, fileName, ConfigConstants.BLOB_CONTAINER);
 
          // Save Medium Size Image
          var processedMediumQualityImageStream = ProcessedImageFactory.TransformToMediumQualityImageFromFile(file);
          var processedMediumQualityFileName = $"{DateHelper.GetDateTimeNowString()}_medium_quality_{file.FileName.Replace(" ", "")}";
-         var mediumQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedMediumQualityImageStream, processedMediumQualityFileName, ConfigConstants.BlobContainer);
+         var mediumQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedMediumQualityImageStream, processedMediumQualityFileName, ConfigConstants.BLOB_CONTAINER);
 
          // Save Small Size Image
          var processedImageStream = ProcessedImageFactory.TransformToLowQualityImageFromFile(file);
          var processedFileName = $"{DateHelper.GetDateTimeNowString()}_low_quality_{file.FileName.Replace(" ", "")}";
-         var lowQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedImageStream, processedFileName, ConfigConstants.BlobContainer);
+         var lowQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedImageStream, processedFileName, ConfigConstants.BLOB_CONTAINER);
 
          return new UploadImageResponse()
          {

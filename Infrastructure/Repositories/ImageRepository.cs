@@ -36,7 +36,7 @@ namespace Infrastructure.Repositories
 
          string filename = imageUrl.Split("/").Last();
 
-         var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(ConfigConstants.BlobContainer);
+         var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(ConfigConstants.BLOB_CONTAINER);
          var blobStorageClient = blobStorageContainer.GetBlobClient(filename);
          await blobStorageClient.DeleteIfExistsAsync();
          return $"Delete file {filename} successfully !";

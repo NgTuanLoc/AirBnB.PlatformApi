@@ -47,7 +47,7 @@ namespace Infrastructure.Repositories
 
       private async Task DeleteAllDataInBlobStorageAsync()
       {
-         var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(ConfigConstants.BlobContainer);
+         var blobStorageContainer = _blobServiceClient.GetBlobContainerClient(ConfigConstants.BLOB_CONTAINER);
 
          await foreach (var blobItem in blobStorageContainer.GetBlobsAsync())
          {
@@ -74,7 +74,7 @@ namespace Infrastructure.Repositories
             Console.WriteLine("fileName room", location.ImagePath);
 
             var imageName = $"{DateHelper.GetDateTimeNowString()}_{location.ImagePath.Split("/").Last()}";
-            var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName, ConfigConstants.BlobContainer);
+            var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName, ConfigConstants.BLOB_CONTAINER);
 
             var newLocation = new Location()
             {
@@ -105,7 +105,6 @@ namespace Infrastructure.Repositories
 
          foreach (var room in roomList)
          {
-
             var location = locationList.FirstOrDefault(l => l.Name == room.LocationName);
 
             var newRoom = ConvertRoomModelIntoRoomEntity(room, location, user);
@@ -119,7 +118,7 @@ namespace Infrastructure.Repositories
       private async Task SeedingLocationBlobStorageAsync(ApplicationUser user, CancellationToken cancellationToken)
       {
          var jsonBlobName = "Data/Json/location.json";
-         var sourceContainerName = ConfigConstants.SeedingDataContainer;
+         var sourceContainerName = ConfigConstants.SEEDING_DATA_CONTAINER;
 
          var sourceContainerClient = _blobServiceClient.GetBlobContainerClient(sourceContainerName);
 
@@ -136,7 +135,6 @@ namespace Infrastructure.Repositories
             {
                foreach (var location in locationList)
                {
-
                   var relativePath = location.ImagePath;
                   relativePath = relativePath.Replace("..", "");
                   var imagePath = "Data" + relativePath;
@@ -144,7 +142,7 @@ namespace Infrastructure.Repositories
                   var imageStream = await ImageToBlobStream(imagePath, sourceContainerClient, sourceContainerName);
 
                   var imageName = $"{DateHelper.GetDateTimeNowString()}_{location.ImagePath.Split("/").Last()}";
-                  var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName, ConfigConstants.BlobContainer);
+                  var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream, imageName, ConfigConstants.BLOB_CONTAINER);
 
                   var newLocation = new Location()
                   {
@@ -185,17 +183,17 @@ namespace Infrastructure.Repositories
                var imageName = $"{DateHelper.GetDateTimeNowString()}_{convertFileName}";
 
                // Original Image
-               var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream1, imageName, ConfigConstants.BlobContainer);
+               var imageUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(imageStream1, imageName, ConfigConstants.BLOB_CONTAINER);
 
                // Save Medium Size Image
                var processedMediumQualityImageStream = ProcessedImageFactory.TransformToMediumQualityImageFromStream(imageStream2);
                var processedMediumQualityFileName = $"{DateHelper.GetDateTimeNowString()}_medium_quality_{convertFileName}";
-               var mediumQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedMediumQualityImageStream, processedMediumQualityFileName, ConfigConstants.BlobContainer);
+               var mediumQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedMediumQualityImageStream, processedMediumQualityFileName, ConfigConstants.BLOB_CONTAINER);
 
                // Save Small Size Image
                var processedSmallQualityImageStream = ProcessedImageFactory.TransformToLowQualityImageFromStream(imageStream3);
                var processedFileName = $"{DateHelper.GetDateTimeNowString()}_low_quality_{convertFileName}";
-               var lowQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedSmallQualityImageStream, processedFileName, ConfigConstants.BlobContainer);
+               var lowQualityUrl = await _imageRepository.UploadImageFileToBlobStorageAsync(processedSmallQualityImageStream, processedFileName, ConfigConstants.BLOB_CONTAINER);
 
                var newImage = new Image
                {

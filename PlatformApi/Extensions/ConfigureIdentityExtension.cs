@@ -1,3 +1,4 @@
+using Core.Constants;
 using Core.Domain.IdentityEntities;
 using Infrastructure.DbContext;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +18,7 @@ namespace PlatformApi.Extensions
 
             services.Configure<IdentityOptions>(options =>
             {
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2); // Set lockout duration to 30 minutes
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(ConfigConstants.LOCKOUT_TIME_SPAN); // Set lockout duration to 30 minutes
                 options.Lockout.MaxFailedAccessAttempts = 5; // Set maximum number of failed login attempts before lockout
             });
 
