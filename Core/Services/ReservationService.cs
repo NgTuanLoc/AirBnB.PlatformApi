@@ -1,3 +1,5 @@
+using AutoMapper;
+using Core.Domain.Entities;
 using Core.Domain.RepositoryInterface;
 using Core.Models.Reservation;
 
@@ -13,31 +15,40 @@ namespace Core.Services
    public class ReservationService : IReservationService
    {
       private readonly IReservationRepository _reservationRepository;
-      public ReservationService(IReservationRepository reservationRepository)
+      private readonly IMapper _mapper;
+
+      public ReservationService(IReservationRepository reservationRepository, IMapper mapper)
       {
          _reservationRepository = reservationRepository;
+         _mapper = mapper;
       }
       public async Task<CreateReservationResponse> CreateReservationService(CreateReservationRequest request, CancellationToken cancellationToken)
       {
          var result = await _reservationRepository.CreateReservationAsync(request, cancellationToken);
-         return result;
+         return _mapper.Map<Reservation, CreateReservationResponse>(result);
       }
       public async Task<List<CreateReservationResponse>> GetAllReservationByRoomIdService(Guid roomId, CancellationToken cancellationToken)
       {
          var result = await _reservationRepository.GetAllReservationByRoomIdAsync(roomId, cancellationToken);
-         return result;
+
+         var response = new List<CreateReservationResponse>();
+         foreach (var room in result)
+         {
+            response.Add(_mapper.Map<Reservation, CreateReservationResponse>(room));
+         };
+         return response;
       }
 
       public async Task<CreateReservationResponse> DeleteReservationByIdService(Guid id, CancellationToken cancellationToken)
       {
          var result = await _reservationRepository.DeleteReservationByIdAsync(id, cancellationToken);
-         return result;
+         return _mapper.Map<Reservation, CreateReservationResponse>(result);
       }
 
       public async Task<CreateReservationResponse> UpdateReservationByIdService(Guid id, UpdateReservationRequest request, CancellationToken cancellationToken)
       {
          var result = await _reservationRepository.UpdateReservationByIdAsync(id, request, cancellationToken);
-         return result;
+         return _mapper.Map<Reservation, CreateReservationResponse>(result);
       }
    }
 }

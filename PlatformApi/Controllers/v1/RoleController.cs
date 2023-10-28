@@ -42,7 +42,7 @@ namespace PlatformApi.Controllers
             return Ok(result);
         }
         [HttpPatch("assign-role-to-user")]
-        public async Task<IActionResult> AssignRoleToUser(CancellationToken cancellationToken)
+        public IActionResult AssignRoleToUser(CancellationToken cancellationToken)
         {
             return Ok("AssignRoleToUser");
         }

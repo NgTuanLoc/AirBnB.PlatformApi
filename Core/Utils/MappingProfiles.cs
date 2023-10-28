@@ -3,6 +3,7 @@ using Core.Domain.Entities;
 using Core.Domain.IdentityEntities;
 using Core.Models.Image;
 using Core.Models.Location;
+using Core.Models.Reservation;
 using Core.Models.Review;
 using Core.Models.Role;
 using Core.Models.Room;
@@ -21,6 +22,7 @@ namespace Core.Utils
             CreateMap<ApplicationRole, CreateRoleResponse>();
             CreateMap<ApplicationUser, CreateUserResponse>();
             CreateMap<Review, CreateReviewResponse>();
+            CreateMap<Reservation, CreateReservationResponse>();
         }
     }
 }

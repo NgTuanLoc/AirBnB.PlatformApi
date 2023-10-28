@@ -14,7 +14,7 @@ namespace Infrastructure.Repositories
       {
          _context = context;
       }
-      public async Task<CreateReservationResponse> CreateReservationAsync(CreateReservationRequest request, CancellationToken cancellationToken)
+      public async Task<Reservation> CreateReservationAsync(CreateReservationRequest request, CancellationToken cancellationToken)
       {
          DateRange dateRange = new()
          {
@@ -54,19 +54,10 @@ namespace Infrastructure.Repositories
          _context.Reservation.Add(newReservation);
          await _context.SaveChangesAsync(cancellationToken);
 
-         return new CreateReservationResponse()
-         {
-            Id = reservationId,
-            CustomerEmail = guest.Email ?? "Unknown Email",
-            RoomName = room.Name,
-            StartDate = dateRange.StartDate,
-            EndDate = dateRange.EndDate,
-            TotalGuest = request.ToTalGuests,
-            TotalPrice = totalPrice
-         };
+         return newReservation;
       }
 
-      public async Task<CreateReservationResponse> DeleteReservationByIdAsync(Guid id, CancellationToken cancellationToken)
+      public async Task<Reservation> DeleteReservationByIdAsync(Guid id, CancellationToken cancellationToken)
       {
          var reservation = await _context.Reservation
             .Include(r => r.Room)
@@ -76,52 +67,45 @@ namespace Infrastructure.Repositories
 
          await _context.SaveChangesAsync(cancellationToken);
 
-         return new CreateReservationResponse()
-         {
-            Id = reservation.Id,
-            CustomerEmail = reservation?.User?.Email ?? "Unknown Email",
-            RoomName = reservation?.Room?.Name ?? "Unknown Room",
-            StartDate = reservation.StartDate,
-            EndDate = reservation.EndDate,
-            TotalGuest = reservation.Total,
-            TotalPrice = reservation.Price
-         };
+         return reservation;
       }
 
-      public async Task<List<CreateReservationResponse>> GetAllReservationByRoomIdAsync(Guid roomId, CancellationToken cancellationToken)
+      public async Task<List<Reservation>> GetAllReservationByRoomIdAsync(Guid roomId, CancellationToken cancellationToken)
       {
          var existedRoom = await _context.Room.FirstOrDefaultAsync(r => r.Id == roomId, cancellationToken) ?? throw new NotFoundException($"Room with id {roomId} is not found!");
-         var reservationList = await (from reservation in _context.Reservation
-                                      join room in _context.Room on reservation.Room equals room
-                                      join user in _context.Users on reservation.User equals user
-                                      where room.Id == roomId
-                                      select new CreateReservationResponse()
-                                      {
-                                         Id = reservation.Id,
-                                         CustomerEmail = user.Email ?? "Unknown Email",
-                                         RoomName = room.Name,
-                                         StartDate = reservation.StartDate,
-                                         EndDate = reservation.EndDate,
-                                         TotalGuest = reservation.Total,
-                                         TotalPrice = reservation.Price
-                                      })
-                                   .ToListAsync(cancellationToken);
+
+         var reservationList = await _context.Reservation
+            .Include(reservation => reservation.Room)
+            .Include(reservation => reservation.User)
+            .Where(reservation => reservation.Room != null && reservation.Room.Id == existedRoom.Id).ToListAsync(cancellationToken);
+
+         // var reservationList = await (from reservation in _context.Reservation
+         //                              join room in _context.Room on reservation.Room equals room
+         //                              join user in _context.Users on reservation.User equals user
+         //                              where room.Id == roomId
+         //                              select new CreateReservationResponse()
+         //                              {
+         //                                 Id = reservation.Id,
+         //                                 CustomerEmail = user.Email ?? "Unknown Email",
+         //                                 RoomName = room.Name,
+         //                                 StartDate = reservation.StartDate,
+         //                                 EndDate = reservation.EndDate,
+         //                                 TotalGuest = reservation.Total,
+         //                                 TotalPrice = reservation.Price
+         //                              })
+         //                           .ToListAsync(cancellationToken);
          return reservationList;
       }
-      public async Task<CreateReservationResponse> UpdateReservationByIdAsync(Guid id, UpdateReservationRequest request, CancellationToken cancellationToken)
+      public async Task<Reservation> UpdateReservationByIdAsync(Guid id, UpdateReservationRequest request, CancellationToken cancellationToken)
       {
          var existedReservation = await _context.Reservation
             .Include(r => r.User)
             .Include(r => r.Room)
             .FirstOrDefaultAsync(r => r.Id == id, cancellationToken) ?? throw new NotFoundException($"Reservation with id {id} is not found !");
-         if (request.StartDate != null)
-         {
-            existedReservation.StartDate = request.StartDate;
-         }
-         if (request.EndDate != null)
-         {
-            existedReservation.EndDate = request.EndDate;
-         }
+
+         existedReservation.StartDate = request.StartDate;
+         existedReservation.EndDate = request.EndDate;
+
          if (request.ToTalGuests != 0)
          {
             existedReservation.Total = request.ToTalGuests;
@@ -138,18 +122,9 @@ namespace Infrastructure.Repositories
 
          await _context.SaveChangesAsync(cancellationToken);
 
-         return new CreateReservationResponse()
-         {
-            Id = existedReservation.Id,
-            CustomerEmail = existedReservation?.User?.Email ?? "Unknown Email",
-            RoomName = existedReservation?.Room?.Name ?? "Unknown Room",
-            StartDate = existedReservation.StartDate,
-            EndDate = existedReservation.EndDate,
-            TotalGuest = existedReservation.Total,
-            TotalPrice = existedReservation.Price
-         };
+         return existedReservation;
       }
-      private float CalculatePrice(float basePrice, DateRange dateRange, float totalGuests)
+      private static float CalculatePrice(float basePrice, DateRange dateRange, float totalGuests)
       {
          return basePrice * totalGuests;
       }
