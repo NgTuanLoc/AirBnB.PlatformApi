@@ -11,12 +11,10 @@ namespace Infrastructure.Repositories
    {
       private readonly ApplicationDbContext _context;
       private readonly IUserRepository _userRepository;
-      private readonly IImageRepository _imageRepository;
-      public LocationRepository(ApplicationDbContext context, IUserRepository userRepository, IImageRepository imageRepository)
+      public LocationRepository(ApplicationDbContext context, IUserRepository userRepository)
       {
          _context = context;
          _userRepository = userRepository;
-         _imageRepository = imageRepository;
       }
       public async Task<Location> CreateLocationAsync(CreateLocationRequest request, string? imageUrl, CancellationToken cancellationToken)
       {
