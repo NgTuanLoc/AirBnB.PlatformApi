@@ -1,4 +1,5 @@
 using AutoMapper;
+using Contracts;
 using Core.Domain.Entities;
 using Core.Domain.IdentityEntities;
 using Core.Models.Image;
@@ -23,6 +24,11 @@ namespace Core.Utils
             CreateMap<ApplicationUser, CreateUserResponse>();
             CreateMap<Review, CreateReviewResponse>();
             CreateMap<Reservation, CreateReservationResponse>();
+
+            // ASB Mapper
+            CreateMap<Room, RoomMessageModel>()
+                .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Owner.Email))
+                .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location != null ? src.Location.Name : null));
         }
     }
 }

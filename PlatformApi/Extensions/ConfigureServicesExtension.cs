@@ -31,6 +31,7 @@ namespace PlatformApi.Extensions
          services.AddScoped<IRoomRepository, RoomRepository>();
          services.AddScoped<IReservationRepository, ReservationRepository>();
          services.AddScoped<IReviewRepository, ReviewRepository>();
+         services.AddScoped<ISendingMessageRepository, SendingMessageRepository>();
 
          // Services Layer
          services.AddScoped<IDatabaseService, DatabaseService>();

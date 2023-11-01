@@ -1,4 +1,5 @@
 using AutoMapper;
+using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
 using Core.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -45,6 +46,13 @@ namespace PlatformApi.Extensions
             });
             var mapperObject = mapperConfig.CreateMapper();
             services.AddSingleton(mapperObject);
+
+            // Service Bus
+            services.AddScoped(x =>
+            {
+                var connection = configuration.GetConnectionString("ServiceBusConnection");
+                return new ServiceBusClient(connection);
+            });
 
             // Add Middleware
             services.AddTransient<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();

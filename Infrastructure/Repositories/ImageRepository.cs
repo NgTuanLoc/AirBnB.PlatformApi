@@ -14,12 +14,12 @@ namespace Infrastructure.Repositories
    {
       private readonly BlobServiceClient _blobServiceClient;
       private readonly ApplicationDbContext _context;
-      private readonly IUserRepository _userRepository;
-      public ImageRepository(BlobServiceClient blobServiceClient, ApplicationDbContext context, IUserRepository userRepository)
+      // private readonly IUserRepository _userRepository;
+      public ImageRepository(BlobServiceClient blobServiceClient, ApplicationDbContext context)
       {
          _blobServiceClient = blobServiceClient;
          _context = context;
-         _userRepository = userRepository;
+         // _userRepository = userRepository;
       }
 
       public async Task<string> UploadImageFileToBlobStorageAsync(Stream streamContent, string filename, string blobContainerName)
@@ -44,7 +44,7 @@ namespace Infrastructure.Repositories
 
       public async Task<ImageEntity> CreateImageAsync(UploadImageRequest request, UploadImageResponse urlList, CancellationToken cancellationToken)
       {
-         var user = await _userRepository.GetUserAsync();
+         // var user = await _userRepository.GetUserAsync();
          Room? room = null;
 
          if (request.RoomId != null)
@@ -54,7 +54,7 @@ namespace Infrastructure.Repositories
             if (room == null) throw new NotFoundException($"Room with Id {request.RoomId} not found !");
          }
 
-         var image = new Image()
+         var image = new ImageEntity()
          {
             Id = Guid.NewGuid(),
             Title = request.Title,
@@ -63,7 +63,8 @@ namespace Infrastructure.Repositories
             MediumQualityUrl = urlList.mediumQualityUrl,
             LowQualityUrl = urlList.lowQualityUrl,
             CreatedDate = DateTime.Now,
-            CreatedBy = user.Email ?? "Unknown",
+            // CreatedBy = user.Email ?? "Unknown",
+            CreatedBy = "Unknown",
             Room = room
          };
 
@@ -128,8 +129,9 @@ namespace Infrastructure.Repositories
             image.LowQualityUrl = urlList.lowQualityUrl;
          }
 
-         var user = await _userRepository.GetUserAsync();
-         image.ModifiedBy = user.Email;
+         // var user = await _userRepository.GetUserAsync();
+         // image.ModifiedBy = user.Email;
+         image.ModifiedBy = "Unknown";
          image.ModifiedDate = DateTime.Now;
 
          await _context.SaveChangesAsync(cancellationToken);
