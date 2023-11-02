@@ -7,13 +7,52 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+- task: NuGetToolInstaller@1
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: build
+    projects: '**/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Platform Api'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/PlatformApi/*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/webapp'
+    zipAfterPublish: True
+- task: DotNetCoreCLI@2
+  displayName: 'Publish Azure Function'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/Functions/*.csproj'
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)/function'
+    zipAfterPublish: True
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Platform Api Artifact'
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/webapp' 
+    artifactName: 'air-bnb-webapp-artifact'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Azure Function Artifact'
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/function' 
+    artifactName: 'air-bnb-function-artifact'
