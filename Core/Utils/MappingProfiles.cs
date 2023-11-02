@@ -27,7 +27,7 @@ namespace Core.Utils
 
             // ASB Mapper
             CreateMap<Room, RoomMessageModel>()
-                .ForMember(dest => dest.email, opt => opt.MapFrom(src => src.Owner.Email))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Owner.Email))
                 .ForMember(dest => dest.LocationName, opt => opt.MapFrom(src => src.Location != null ? src.Location.Name : null));
         }
     }

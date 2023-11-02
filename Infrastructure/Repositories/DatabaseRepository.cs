@@ -75,7 +75,7 @@ namespace Infrastructure.Repositories
             message.Email = userEmail;
             messageStringList.Add(JsonConvert.SerializeObject(message));
          }
-         await _sendingMessageRepository.SendMessageInBatchAsync(messageStringList, ConfigConstants.AMOUNT_OF_MESSAGES_PER_BATCH, cancellationToken);
+         await _sendingMessageRepository.SendMessageInBatchAsync(messageStringList, ConfigConstants.AMOUNT_OF_MESSAGES_PER_BATCH, ConfigConstants.LOCATION_SEEDER_QUEUE, cancellationToken);
       }
    }
 }

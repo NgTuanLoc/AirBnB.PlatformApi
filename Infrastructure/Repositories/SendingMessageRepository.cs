@@ -30,11 +30,11 @@ namespace Infrastructure.Repositories
             return jsonString;
         }
 
-        public async Task SendMessageInBatchAsync(List<string> messageList, int amountOfMessagesPerBatch, CancellationToken cancellationToken)
+        public async Task SendMessageInBatchAsync(List<string> messageList, int amountOfMessagesPerBatch, string queueName, CancellationToken cancellationToken)
         {
             int amountOfBatch = (int)Math.Ceiling((double)messageList.Count / amountOfMessagesPerBatch);
             // ToDo: Create a sender for the desired queue
-            ServiceBusSender sender = _serviceBusClient.CreateSender(ConfigConstants.LOCATION_SEEDER_QUEUE);
+            ServiceBusSender sender = _serviceBusClient.CreateSender(queueName);
 
             // ToDo: Create a list to hold the messages
             List<ServiceBusMessage> asbMessageList = new();

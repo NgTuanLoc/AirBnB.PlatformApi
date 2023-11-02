@@ -18,7 +18,7 @@ public class RoomMessageModel
     public float Latitude { get; set; }
     public float Longitude { get; set; }
     public ICollection<string> ImagePath { get; set; }
-    public string email { get; set; }
+    public string Email { get; set; }
 #nullable enable
     public string? LocationName { get; set; }
 }
