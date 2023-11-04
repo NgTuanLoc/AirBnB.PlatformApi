@@ -26,7 +26,7 @@ namespace PlatformApi.Extensions
             {
                 options.AddPolicy("AllowSpecificOrigin",
                 builder => builder
-                .WithOrigins("http://localhost:3000", "http://localhost:3001")
+                .WithOrigins("http://localhost:3000", "http://localhost:3001", "https://ntl-airbnb-client-app.vercel.app")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
