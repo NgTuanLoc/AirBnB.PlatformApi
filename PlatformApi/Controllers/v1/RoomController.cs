@@ -7,6 +7,7 @@ namespace PlatformApi.Controllers
 {
    [ApiVersion("1.0")]
    [Authorize]
+   [AllowAnonymous]
    public class RoomController : BaseController
    {
       private readonly ILogger<RoomController> _logger;
@@ -17,9 +18,9 @@ namespace PlatformApi.Controllers
          _roomService = roomService;
       }
       [HttpGet]
-      public async Task<IActionResult> GetAllRoomList(CancellationToken cancellationToken)
+      public async Task<IActionResult> GetAllRoomList([FromQuery] Guid? locationId, CancellationToken cancellationToken)
       {
-         var result = await _roomService.GetAllRoomListService(cancellationToken);
+         var result = await _roomService.GetAllRoomListService(locationId, cancellationToken);
          return Ok(result);
       }
       [HttpGet("{id}")]

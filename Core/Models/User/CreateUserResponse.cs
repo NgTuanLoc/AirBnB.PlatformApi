@@ -2,6 +2,8 @@ namespace Core.Models.User
 {
     public class CreateUserResponse
     {
+        public Guid Id { get; set; }
+        public string Email { get; set; } = "Unknown";
         public string PersonName { get; set; } = "Unknown";
         public string Address { get; set; } = "Unknown Address";
         public string ProfileImage { get; set; } = "Unknown ProfileImage";

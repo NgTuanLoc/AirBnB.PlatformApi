@@ -85,15 +85,20 @@ namespace Infrastructure.Repositories
          return room;
       }
 
-      public async Task<List<Room>> GetAllRoomListAsync(CancellationToken cancellationToken)
+      public async Task<List<Room>> GetAllRoomListAsync(Guid? locationId, CancellationToken cancellationToken)
       {
-         var roomList = await _context.Room
+         var roomList = _context.Room
          .Include(item => item.Location)
          .Include(item => item.ImageList)
-         .Include(item => item.Owner)
-         .ToListAsync(cancellationToken);
+         .Include(item => item.Owner);
 
-         return roomList;
+         if (locationId != null)
+         {
+            var location = await _context.Location.Where(location => location.Id == locationId).FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException($"Location with id {locationId} can not be found !");
+            return await roomList.Where(room => room.Location != null && room.Location.Id == locationId).ToListAsync(cancellationToken);
+         }
+
+         return await roomList.ToListAsync(cancellationToken);
       }
 
       public async Task<Room> DeleteRoomByIdAsync(Guid id, CancellationToken cancellationToken)

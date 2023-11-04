@@ -10,7 +10,7 @@ namespace Core.Services
    {
       Task<CreateRoomResponse> CreateRoomService(CreateRoomRequest request, CancellationToken cancellationToken);
       Task<CreateRoomResponse> GetRoomByIdService(Guid id, CancellationToken cancellationToken);
-      Task<List<CreateRoomResponse>> GetAllRoomListService(CancellationToken cancellationToken);
+      Task<List<CreateRoomResponse>> GetAllRoomListService(Guid? locationId, CancellationToken cancellationToken);
       Task<CreateRoomResponse> DeleteRoomByIdService(Guid id, CancellationToken cancellationToken);
       Task<CreateRoomResponse> UpdateRoomByIdService(Guid id, UpdateRoomRequest request, CancellationToken cancellationToken);
    }
@@ -37,9 +37,9 @@ namespace Core.Services
          return response;
       }
 
-      public async Task<List<CreateRoomResponse>> GetAllRoomListService(CancellationToken cancellationToken)
+      public async Task<List<CreateRoomResponse>> GetAllRoomListService(Guid? locationId, CancellationToken cancellationToken)
       {
-         var roomList = await _roomRepository.GetAllRoomListAsync(cancellationToken);
+         var roomList = await _roomRepository.GetAllRoomListAsync(locationId, cancellationToken);
          var response = new List<CreateRoomResponse>();
 
          foreach (var room in roomList)
