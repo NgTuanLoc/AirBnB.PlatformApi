@@ -1,8 +1,8 @@
 using AutoMapper;
 using Core.Domain.Entities;
 using Core.Domain.RepositoryInterface;
+using Core.Models.PaginationModel;
 using Core.Models.Room;
-using Core.Utils;
 
 namespace Core.Services
 {
@@ -10,7 +10,7 @@ namespace Core.Services
    {
       Task<CreateRoomResponse> CreateRoomService(CreateRoomRequest request, CancellationToken cancellationToken);
       Task<CreateRoomResponse> GetRoomByIdService(Guid id, CancellationToken cancellationToken);
-      Task<List<CreateRoomResponse>> GetAllRoomListService(Guid? locationId, CancellationToken cancellationToken);
+      Task<PaginationResponse<CreateRoomResponse>> GetAllRoomListService(Guid? locationId, PagingParams pagingParams, PaginationModel paginationModel, CancellationToken cancellationToken);
       Task<CreateRoomResponse> DeleteRoomByIdService(Guid id, CancellationToken cancellationToken);
       Task<CreateRoomResponse> UpdateRoomByIdService(Guid id, UpdateRoomRequest request, CancellationToken cancellationToken);
    }
@@ -37,15 +37,9 @@ namespace Core.Services
          return response;
       }
 
-      public async Task<List<CreateRoomResponse>> GetAllRoomListService(Guid? locationId, CancellationToken cancellationToken)
+      public async Task<PaginationResponse<CreateRoomResponse>> GetAllRoomListService(Guid? locationId, PagingParams pagingParams, PaginationModel paginationModel, CancellationToken cancellationToken)
       {
-         var roomList = await _roomRepository.GetAllRoomListAsync(locationId, cancellationToken);
-         var response = new List<CreateRoomResponse>();
-
-         foreach (var room in roomList)
-         {
-            response.Add(_mapper.Map<Room, CreateRoomResponse>(room));
-         }
+         var response = await _roomRepository.GetAllRoomListAsync(locationId, pagingParams, paginationModel, cancellationToken);
 
          return response;
       }

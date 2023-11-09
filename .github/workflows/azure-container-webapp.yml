@@ -46,9 +46,9 @@ jobs:
       run: dotnet publish -c Release -o ./publish
       working-directory: ./PlatformApi # Navigate to the PlatformApi folder
 
-    - name: Deploy to Azure App Service
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: airbnb-ntl
-        publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
-        package: ./PlatformApi/publish # Use the correct path to the published PlatformApi folder
+    # - name: Deploy to Azure App Service
+    #   uses: azure/webapps-deploy@v2
+    #   with:
+    #     app-name: airbnb-ntl
+    #     publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
+    #     package: ./PlatformApi/publish # Use the correct path to the published PlatformApi folder

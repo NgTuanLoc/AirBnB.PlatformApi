@@ -1,9 +1,12 @@
+using AutoMapper;
 using Core.Domain.Entities;
 using Core.Domain.RepositoryInterface;
 using Core.Exceptions;
 using Core.Models.Image;
+using Core.Models.PaginationModel;
 using Core.Models.Room;
 using Core.Services;
+using Core.Utils.ServerSidePaginationUtils;
 using Infrastructure.DbContext;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -17,12 +20,14 @@ namespace Infrastructure.Repositories
       private readonly IImageRepository _imageRepository;
       private readonly IImageService _imageService;
       private readonly ApplicationDbContext _context;
-      public RoomRepository(ApplicationDbContext context, IUserRepository userRepository, IImageRepository imageRepository, IImageService imageService)
+      private readonly IMapper _mapper;
+      public RoomRepository(ApplicationDbContext context, IUserRepository userRepository, IImageRepository imageRepository, IImageService imageService, IMapper mapper)
       {
          _context = context;
          _userRepository = userRepository;
          _imageRepository = imageRepository;
          _imageService = imageService;
+         _mapper = mapper;
       }
       public async Task<Room> CreateRoomAsync(CreateRoomRequest request, CancellationToken cancellationToken)
       {
@@ -85,20 +90,43 @@ namespace Infrastructure.Repositories
          return room;
       }
 
-      public async Task<List<Room>> GetAllRoomListAsync(Guid? locationId, CancellationToken cancellationToken)
+      public async Task<PaginationResponse<CreateRoomResponse>> GetAllRoomListAsync(Guid? locationId, PagingParams pagingParams, PaginationModel paginationModel, CancellationToken cancellationToken)
       {
-         var roomList = _context.Room
+         IQueryable<Room> roomQuery = _context.Room
          .Include(item => item.Location)
          .Include(item => item.ImageList)
          .Include(item => item.Owner);
+         List<Room> roomList = new();
 
          if (locationId != null)
          {
             var location = await _context.Location.Where(location => location.Id == locationId).FirstOrDefaultAsync(cancellationToken) ?? throw new NotFoundException($"Location with id {locationId} can not be found !");
-            return await roomList.Where(room => room.Location != null && room.Location.Id == locationId).ToListAsync(cancellationToken);
+
+            roomQuery = roomQuery.Where(room => room.Location != null && room.Location.Id == locationId);
          }
 
-         return await roomList.ToListAsync(cancellationToken);
+         var filteredRoomQuery = RoomPaginateUtil.ApplyFilters(roomQuery, paginationModel.FilterDescriptorList);
+
+         var sortedRoomQuery = RoomPaginateUtil.ApplySorting(filteredRoomQuery, paginationModel.SortField, paginationModel.SortOrder);
+
+         var paginatedRoomQuery = RoomPaginateUtil.ApplyPagination(sortedRoomQuery, pagingParams);
+
+         roomList = await paginatedRoomQuery.ToListAsync(cancellationToken);
+
+         var totalPage = Math.Ceiling((double)roomList.Count / pagingParams.PageSize);
+
+         List<CreateRoomResponse> data = _mapper.Map<List<Room>, List<CreateRoomResponse>>(roomList);
+
+         PaginationResponse<CreateRoomResponse> response = new()
+         {
+            Data = data,
+            Page = pagingParams.Page,
+            PageSize = pagingParams.PageSize,
+            TotalRecords = roomQuery.Count(),
+            TotalFilteredRecords = roomList.Count,
+         };
+
+         return response;
       }
 
       public async Task<Room> DeleteRoomByIdAsync(Guid id, CancellationToken cancellationToken)

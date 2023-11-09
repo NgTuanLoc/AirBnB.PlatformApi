@@ -1,3 +1,4 @@
+using Core.Models.PaginationModel;
 using Core.Models.Room;
 using Core.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -17,10 +18,10 @@ namespace PlatformApi.Controllers
          _logger = logger;
          _roomService = roomService;
       }
-      [HttpGet]
-      public async Task<IActionResult> GetAllRoomList([FromQuery] Guid? locationId, CancellationToken cancellationToken)
+      [HttpPost("getRoomPaginate")]
+      public async Task<IActionResult> GetAllRoomList([FromQuery] Guid? locationId, [FromQuery] PagingParams pagingParams, [FromBody] PaginationModel paginationModel, CancellationToken cancellationToken)
       {
-         var result = await _roomService.GetAllRoomListService(locationId, cancellationToken);
+         var result = await _roomService.GetAllRoomListService(locationId, pagingParams, paginationModel, cancellationToken);
          return Ok(result);
       }
       [HttpGet("{id}")]
