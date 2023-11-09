@@ -21,12 +21,13 @@ namespace PlatformApi.Extensions
             }).AddNewtonsoftJson();
             services.AddHttpContextAccessor();
 
+            string domainOriginString = configuration["AllowSpecificOrigin"] ?? "*";
             // Cors
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
                 builder => builder
-                .WithOrigins("http://localhost:3000", "http://localhost:3001", "https://ntl-airbnb-client-app.vercel.app")
+                .WithOrigins(domainOriginString.Split(","))
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .AllowCredentials());
